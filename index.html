@@ -2,827 +2,1138 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>CryptoTrack</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>NexTrade — Crypto Exchange</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#080b0f;
-  --bg2:#0d1117;
-  --bg3:#111820;
-  --bg4:#16202e;
-  --border:rgba(0,255,128,0.07);
-  --border2:rgba(0,255,128,0.15);
-  --border3:rgba(0,255,128,0.25);
-  --text:#e8f5f0;
-  --text2:#7a9e8e;
-  --text3:#3d5c4e;
-  --green:#00ff80;
-  --green2:#00cc66;
-  --green3:rgba(0,255,128,0.12);
-  --green4:rgba(0,255,128,0.06);
-  --red:#ff4455;
-  --red2:rgba(255,68,85,0.12);
-  --radius:14px;
-  --radius-sm:9px;
-  --nav-h:60px;
+  --bg:#0a0c10;
+  --bg2:#0f1217;
+  --bg3:#141820;
+  --bg4:#1a2030;
+  --bg5:#1e2535;
+  --b1:rgba(255,255,255,0.06);
+  --b2:rgba(255,255,255,0.10);
+  --b3:rgba(255,255,255,0.16);
+  --t1:#e8ecf2;
+  --t2:#8896a8;
+  --t3:#4a5568;
+  --up:#00c896;
+  --up2:rgba(0,200,150,0.12);
+  --dn:#f0475a;
+  --dn2:rgba(240,71,90,0.12);
+  --accent:#3b82f6;
+  --accent2:rgba(59,130,246,0.15);
+  --gold:#f5a623;
+  --r:8px;
+  --rs:5px;
 }
-html,body{height:100%;overflow:hidden;}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;font-size:13px}
 
-/* ── APP SHELL ── */
-.app{display:flex;flex-direction:column;height:100vh;}
+/* TICKER TAPE */
+.ticker{height:32px;background:var(--bg2);border-bottom:1px solid var(--b1);display:flex;align-items:center;overflow:hidden;flex-shrink:0}
+.ticker-inner{display:flex;gap:0;white-space:nowrap;animation:scroll 40s linear infinite}
+.ticker-inner:hover{animation-play-state:paused}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tick-item{display:inline-flex;align-items:center;gap:6px;padding:0 20px;border-right:1px solid var(--b1);font-size:11px}
+.tick-sym{font-weight:600;color:var(--t1)}
+.tick-price{color:var(--t2)}
+.up{color:var(--up)}
+.dn{color:var(--dn)}
 
-/* ── TOP BAR ── */
-.topbar{
-  height:56px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;
-  background:var(--bg2);
-  border-bottom:1px solid var(--border);
-}
-.logo{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:700;letter-spacing:-0.4px;color:var(--text);}
-.logo-mark{width:30px;height:30px;border-radius:8px;background:var(--green3);border:1px solid var(--border3);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:15px;}
-.topbar-right{display:flex;align-items:center;gap:10px;}
-.live-pill{display:flex;align-items:center;gap:6px;padding:5px 12px;background:var(--green4);border:1px solid var(--border2);border-radius:20px;font-size:11px;color:var(--green);}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.icon-btn{width:36px;height:36px;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);transition:.15s;}
-.icon-btn:hover{border-color:var(--border2);color:var(--green);}
+/* TOP BAR */
+.topbar{height:52px;background:var(--bg2);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 16px;gap:0;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:800;letter-spacing:-0.5px;color:var(--t1);min-width:180px;text-decoration:none}
+.logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff}
+.logo span{color:var(--accent)}
+.topnav{display:flex;align-items:center;gap:2px;flex:1;padding:0 16px}
+.tnav-btn{padding:7px 14px;border-radius:var(--rs);font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;background:none;border:none;transition:.15s;white-space:nowrap}
+.tnav-btn:hover{color:var(--t1);background:var(--bg3)}
+.tnav-btn.active{color:var(--t1);background:var(--bg4)}
+.topbar-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.btn-outline{padding:6px 14px;border-radius:var(--rs);font-size:12px;font-weight:500;border:1px solid var(--b2);color:var(--t1);background:none;cursor:pointer;transition:.15s}
+.btn-outline:hover{border-color:var(--b3);background:var(--bg3)}
+.btn-accent{padding:6px 14px;border-radius:var(--rs);font-size:12px;font-weight:600;border:none;background:var(--accent);color:#fff;cursor:pointer;transition:.15s}
+.btn-accent:hover{opacity:.88}
+.topbar-icon{width:34px;height:34px;border-radius:var(--rs);background:var(--bg3);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);transition:.15s}
+.topbar-icon:hover{color:var(--t1);border-color:var(--b2)}
 
-/* ── TAB BAR (desktop sidebar + mobile bottom) ── */
-.tab-bar{
-  display:flex;flex-direction:column;
-  width:220px;flex-shrink:0;
-  background:var(--bg2);
-  border-right:1px solid var(--border);
-  padding:16px 10px;
-  gap:3px;
-}
-.tab-btn{
-  display:flex;align-items:center;gap:11px;
-  padding:10px 12px;border-radius:var(--radius-sm);
-  font-size:13px;color:var(--text2);cursor:pointer;
-  border:1px solid transparent;
-  transition:.15s;user-select:none;
-  background:none;width:100%;text-align:left;
-}
-.tab-btn i{font-size:18px;flex-shrink:0;}
-.tab-btn:hover{background:var(--bg3);color:var(--text);}
-.tab-btn.active{background:var(--green3);border-color:var(--border2);color:var(--green);}
-.tab-sep{height:1px;background:var(--border);margin:8px 4px;}
+/* APP */
+.app{display:flex;height:calc(100vh - 32px - 52px);overflow:hidden}
 
-/* ── BODY ROW ── */
-.body-row{flex:1;display:flex;overflow:hidden;}
+/* SIDEBAR */
+.sidebar{width:52px;background:var(--bg2);border-right:1px solid var(--b1);display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;flex-shrink:0}
+.sb-btn{width:36px;height:36px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t3);transition:.15s;border:none;background:none;position:relative}
+.sb-btn i{font-size:19px}
+.sb-btn:hover{color:var(--t1);background:var(--bg4)}
+.sb-btn.active{color:var(--accent);background:var(--accent2)}
+.sb-btn::after{content:attr(data-tip);position:absolute;left:44px;top:50%;transform:translateY(-50%);background:var(--bg4);border:1px solid var(--b2);color:var(--t1);font-size:11px;font-weight:500;padding:4px 9px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:.1s;z-index:99}
+.sb-btn:hover::after{opacity:1}
+.sb-sep{width:28px;height:1px;background:var(--b1);margin:4px 0}
 
-/* ── CONTENT ── */
-.content-area{flex:1;overflow-y:auto;padding:24px;}
-.content-area::-webkit-scrollbar{width:5px;}
-.content-area::-webkit-scrollbar-track{background:var(--bg);}
-.content-area::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
+/* MAIN */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column}
 
-/* ── PAGES ── */
-.page{display:none;animation:fadeIn .2s ease;}
-.page.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* PAGES */
+.page{display:none;flex:1;overflow:hidden}
+.page.active{display:flex;flex-direction:column;overflow:hidden}
 
-/* ── CARDS ── */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
-.card-title{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:14px;font-weight:500;}
+/* SCROLLABLE INNER */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden}
+.scroll::-webkit-scrollbar{width:4px}
+.scroll::-webkit-scrollbar-track{background:transparent}
+.scroll::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 
-/* ── METRICS ── */
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-.metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
-.metric-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:8px;}
-.metric-value{font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--text);}
-.metric-sub{font-size:12px;margin-top:5px;display:flex;align-items:center;gap:4px;}
-.up{color:var(--green);}
-.down{color:var(--red);}
-.muted{color:var(--text2);}
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r)}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--b1)}
+.card-title{font-size:12px;font-weight:600;color:var(--t2);letter-spacing:.04em;text-transform:uppercase}
 
-/* ── DASHBOARD GRID ── */
-.dash-grid{display:grid;grid-template-columns:1fr 290px;gap:14px;margin-bottom:14px;}
-.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+/* ═══════════════ DASHBOARD PAGE ═══════════════ */
+.dash-layout{display:grid;grid-template-columns:1fr 340px;grid-template-rows:auto 1fr;gap:1px;height:100%;background:var(--b1)}
+.dash-left{background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.dash-right{background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 
-/* ── PRICE HEADER ── */
-.price-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
-.price-main{font-size:28px;font-weight:700;letter-spacing:-.8px;}
-.tf-row{display:flex;gap:4px;}
-.tf-btn{padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer;background:none;border:1px solid transparent;color:var(--text2);transition:.15s;}
-.tf-btn:hover{background:var(--bg3);color:var(--text);}
-.tf-btn.active{background:var(--green4);border-color:var(--border2);color:var(--green);}
-.chart-wrap{position:relative;height:210px;}
+/* Pair selector bar */
+.pair-bar{display:flex;align-items:center;gap:0;background:var(--bg2);border-bottom:1px solid var(--b1);overflow-x:auto;flex-shrink:0}
+.pair-bar::-webkit-scrollbar{display:none}
+.pair-tab{display:flex;align-items:center;gap:8px;padding:10px 16px;border-right:1px solid var(--b1);cursor:pointer;white-space:nowrap;transition:.12s;flex-shrink:0;border-bottom:2px solid transparent}
+.pair-tab:hover{background:var(--bg3)}
+.pair-tab.active{background:var(--bg3);border-bottom-color:var(--accent)}
+.pair-sym{font-size:13px;font-weight:700}
+.pair-usdt{font-size:11px;color:var(--t3)}
+.pair-price-sm{font-size:12px;font-weight:600}
+.pair-ch-sm{font-size:10px}
 
-/* ── COIN LIST ── */
-.coin-list{display:flex;flex-direction:column;gap:2px;}
-.coin-row{display:flex;align-items:center;gap:11px;padding:9px 8px;border-radius:var(--radius-sm);cursor:pointer;transition:.12s;border:1px solid transparent;}
-.coin-row:hover{background:var(--bg3);}
-.coin-row.active{background:var(--green4);border-color:var(--border);}
-.coin-ic{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
-.coin-nm{flex:1;min-width:0;}
-.coin-nm-main{font-size:13px;font-weight:500;}
-.coin-nm-sub{font-size:11px;color:var(--text2);}
-.coin-pr{text-align:right;flex-shrink:0;}
-.coin-pr-v{font-size:13px;font-weight:500;}
-.coin-pr-c{font-size:11px;}
+/* Chart area */
+.chart-area{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:0}
+.chart-head{display:flex;align-items:center;gap:20px;padding:12px 16px;flex-wrap:wrap;flex-shrink:0}
+.ch-price{font-size:28px;font-weight:800;letter-spacing:-1px}
+.ch-change{font-size:13px;font-weight:500}
+.ch-stats{display:flex;gap:20px;margin-left:16px}
+.ch-stat label{font-size:10px;color:var(--t3);display:block;margin-bottom:2px}
+.ch-stat span{font-size:12px;font-weight:500}
+.tf-row{display:flex;gap:2px;margin-left:auto}
+.tf-btn{padding:4px 9px;border-radius:4px;font-size:11px;font-weight:500;cursor:pointer;background:none;border:1px solid transparent;color:var(--t3);transition:.12s}
+.tf-btn:hover{color:var(--t1)}
+.tf-btn.active{background:var(--bg4);border-color:var(--b2);color:var(--t1)}
+.chart-canvas-wrap{flex:1;padding:0 16px 12px;min-height:0}
+.chart-canvas-wrap canvas{width:100%!important;height:100%!important}
 
-/* ── PF ROWS ── */
-.pf-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
-.pf-row:last-child{border-bottom:none;}
-.pf-sym{font-size:12px;font-weight:600;color:var(--text2);min-width:38px;}
-.pf-track{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
-.pf-fill{height:100%;border-radius:2px;}
-.pf-amt{font-size:13px;font-weight:500;min-width:70px;text-align:right;}
-.pf-pct{font-size:11px;min-width:38px;text-align:right;}
+/* Order book */
+.ob-wrap{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.ob-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;flex-shrink:0;border-bottom:1px solid var(--b1)}
+.ob-title{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.04em}
+.ob-cols{display:grid;grid-template-columns:1fr 1fr 1fr;padding:6px 14px;border-bottom:1px solid var(--b1)}
+.ob-col-label{font-size:10px;color:var(--t3);font-weight:500;text-align:right}
+.ob-col-label:first-child{text-align:left}
+.ob-list{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.ob-asks,.ob-bids{flex:1;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+.ob-asks{justify-content:flex-start}
+.ob-row{display:grid;grid-template-columns:1fr 1fr 1fr;padding:2px 14px;position:relative;cursor:pointer;transition:.08s}
+.ob-row:hover{background:var(--bg4)}
+.ob-row span{font-size:11px;font-weight:500;text-align:right;z-index:1;position:relative;font-family:'SF Mono','Fira Code',monospace}
+.ob-row span:first-child{text-align:left}
+.ob-bar{position:absolute;right:0;top:0;bottom:0;opacity:.12;pointer-events:none}
+.ob-spread{display:flex;align-items:center;justify-content:center;gap:8px;padding:5px 14px;background:var(--bg3);flex-shrink:0}
+.ob-spread-price{font-size:14px;font-weight:800;letter-spacing:-.3px}
+.ob-spread-label{font-size:10px;color:var(--t3)}
 
-/* ── DONUT LEGEND ── */
-.donut-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
-.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
-.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+/* Trades */
+.trades-row{display:grid;grid-template-columns:1fr 1fr 1fr;padding:3px 14px}
+.trades-row span{font-size:11px;font-family:'SF Mono','Fira Code',monospace;text-align:right}
+.trades-row span:first-child{text-align:left}
 
-/* ── MARKETS PAGE ── */
-.mkt-table{width:100%;border-collapse:collapse;}
-.mkt-table th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;}
-.mkt-table th.right{text-align:right;}
-.mkt-table td{padding:12px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
-.mkt-table tr:last-child td{border-bottom:none;}
-.mkt-table tr:hover td{background:var(--bg3);}
-.mkt-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}
-.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:500;}
-.badge.up{background:rgba(0,255,128,.1);color:var(--green);}
-.badge.down{background:rgba(255,68,85,.1);color:var(--red);}
-.sparkline-cell{width:80px;}
+/* ═══════════════ MARKETS PAGE ═══════════════ */
+.mkt-layout{display:flex;flex-direction:column;height:100%}
+.mkt-filters{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--b1);flex-shrink:0;background:var(--bg2);flex-wrap:wrap}
+.filter-btn{padding:5px 12px;border-radius:var(--rs);font-size:11px;font-weight:500;cursor:pointer;background:none;border:1px solid var(--b1);color:var(--t2);transition:.12s}
+.filter-btn:hover{color:var(--t1);border-color:var(--b2)}
+.filter-btn.active{background:var(--accent2);border-color:var(--accent);color:var(--accent)}
+.search-box{display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rs);padding:5px 10px;margin-left:auto}
+.search-box input{background:none;border:none;outline:none;color:var(--t1);font-size:12px;width:140px}
+.search-box input::placeholder{color:var(--t3)}
+.mkt-table-wrap{flex:1;overflow-y:auto}
+.mkt-table-wrap::-webkit-scrollbar{width:4px}
+.mkt-table-wrap::-webkit-scrollbar-thumb{background:var(--bg4)}
+.mkt-table{width:100%;border-collapse:collapse}
+.mkt-table thead{position:sticky;top:0;background:var(--bg2);z-index:2}
+.mkt-table th{padding:10px 16px;font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--b1);text-align:right;cursor:pointer;white-space:nowrap;user-select:none}
+.mkt-table th:first-child{text-align:left}
+.mkt-table th:hover{color:var(--t1)}
+.mkt-table td{padding:11px 16px;border-bottom:1px solid var(--b1);text-align:right;font-size:12px;vertical-align:middle}
+.mkt-table td:first-child{text-align:left}
+.mkt-table tbody tr{transition:.1s;cursor:pointer}
+.mkt-table tbody tr:hover{background:var(--bg3)}
+.mkt-rank{color:var(--t3);font-size:11px;min-width:28px}
+.mkt-coin-cell{display:flex;align-items:center;gap:10px}
+.mkt-ico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.mkt-name{font-weight:600;font-size:13px}
+.mkt-sym{font-size:11px;color:var(--t3);margin-top:1px}
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}
+.badge-up{background:var(--up2);color:var(--up)}
+.badge-dn{background:var(--dn2);color:var(--dn)}
+.sparkline-wrap{width:80px;height:32px;display:inline-block;vertical-align:middle}
+.star-btn{background:none;border:none;cursor:pointer;color:var(--t3);font-size:14px;transition:.1s}
+.star-btn:hover,.star-btn.starred{color:var(--gold)}
+.trade-btn{padding:4px 12px;border-radius:4px;font-size:11px;font-weight:600;background:var(--accent);color:#fff;border:none;cursor:pointer;transition:.12s}
+.trade-btn:hover{opacity:.82}
 
-/* ── NEWS PAGE ── */
-.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
-.news-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:10px;}
-.news-card:hover{border-color:var(--border2);background:var(--bg3);}
-.news-src{font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.06em;font-weight:500;}
-.news-title{font-size:14px;font-weight:500;line-height:1.45;color:var(--text);}
-.news-desc{font-size:12px;color:var(--text2);line-height:1.55;}
-.news-meta{font-size:11px;color:var(--text3);margin-top:auto;}
-.news-tag{display:inline-block;padding:2px 7px;background:var(--green4);border:1px solid var(--border);border-radius:4px;font-size:10px;color:var(--green2);}
+/* ═══════════════ PORTFOLIO PAGE ═══════════════ */
+.port-layout{display:grid;grid-template-columns:1fr 320px;gap:1px;height:100%;background:var(--b1)}
+.port-main{background:var(--bg);overflow-y:auto}
+.port-main::-webkit-scrollbar{width:4px}
+.port-main::-webkit-scrollbar-thumb{background:var(--bg4)}
+.port-side{background:var(--bg);overflow-y:auto}
+.port-hero{background:linear-gradient(135deg,rgba(59,130,246,.12),rgba(139,92,246,.08));border-bottom:1px solid var(--b1);padding:24px}
+.port-total-label{font-size:11px;color:var(--t2);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.port-total{font-size:36px;font-weight:800;letter-spacing:-1.5px}
+.port-sub{display:flex;align-items:center;gap:12px;margin-top:8px}
+.port-metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b1);flex-shrink:0}
+.port-metric{background:var(--bg2);padding:14px 16px}
+.port-metric-label{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.port-metric-val{font-size:16px;font-weight:700;letter-spacing:-.3px}
+.asset-table{width:100%;border-collapse:collapse}
+.asset-table th{padding:10px 16px;font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--b1);text-align:right;background:var(--bg2)}
+.asset-table th:first-child{text-align:left}
+.asset-table td{padding:13px 16px;border-bottom:1px solid var(--b1);text-align:right;font-size:12px}
+.asset-table td:first-child{text-align:left}
+.asset-row:hover td{background:var(--bg3)}
+.pf-bar-wrap{width:100%;background:var(--bg4);border-radius:2px;height:3px;margin-top:4px}
+.pf-bar{height:3px;border-radius:2px}
 
-/* ── PROFILE PAGE ── */
-.profile-wrap{max-width:580px;}
-.profile-hero{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;display:flex;align-items:center;gap:20px;margin-bottom:16px;}
-.profile-avatar{width:68px;height:68px;border-radius:50%;background:var(--green3);border:2px solid var(--border3);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--green);flex-shrink:0;}
-.profile-name{font-size:20px;font-weight:700;letter-spacing:-.3px;}
-.profile-sub{font-size:13px;color:var(--text2);margin-top:3px;}
-.profile-badge{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 10px;background:var(--green4);border:1px solid var(--border2);border-radius:20px;font-size:11px;color:var(--green);}
-.field-group{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;}
-.field-row{display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);}
-.field-row:last-child{border-bottom:none;}
-.field-icon{width:34px;height:34px;border-radius:var(--radius-sm);background:var(--green4);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:16px;flex-shrink:0;margin-right:14px;}
-.field-label{font-size:11px;color:var(--text3);margin-bottom:2px;}
-.field-value{font-size:14px;font-weight:500;}
-.field-action{margin-left:auto;font-size:12px;color:var(--text2);cursor:pointer;padding:4px 10px;border-radius:5px;border:1px solid var(--border);}
-.field-action:hover{border-color:var(--border2);color:var(--green);}
+/* ═══════════════ NEWS PAGE ═══════════════ */
+.news-layout{display:grid;grid-template-columns:1fr 300px;height:100%;gap:1px;background:var(--b1)}
+.news-main{background:var(--bg);overflow-y:auto;padding:16px}
+.news-main::-webkit-scrollbar{width:4px}
+.news-main::-webkit-scrollbar-thumb{background:var(--bg4)}
+.news-side{background:var(--bg);overflow-y:auto;display:flex;flex-direction:column}
+.news-side::-webkit-scrollbar{width:4px}
+.news-side::-webkit-scrollbar-thumb{background:var(--bg4)}
+.news-filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.news-card{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:16px;margin-bottom:10px;cursor:pointer;transition:.12s}
+.news-card:hover{border-color:var(--b2);background:var(--bg3)}
+.news-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.news-src{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.news-time{font-size:10px;color:var(--t3)}
+.news-title{font-size:14px;font-weight:600;line-height:1.4;margin-bottom:6px;color:var(--t1)}
+.news-desc{font-size:12px;color:var(--t2);line-height:1.55}
+.news-tags{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.news-tag{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:500;background:var(--bg4);color:var(--t2);border:1px solid var(--b1)}
+.trending-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--b1);cursor:pointer;transition:.12s}
+.trending-item:hover{background:var(--bg3)}
+.trend-rank{font-size:12px;font-weight:700;color:var(--t3);min-width:18px}
+.trend-info{flex:1}
+.trend-name{font-size:12px;font-weight:600}
+.trend-meta{font-size:10px;color:var(--t2);margin-top:1px}
+.trend-change{font-size:11px;font-weight:600}
 
-/* ── SETTINGS PAGE ── */
-.settings-wrap{max-width:580px;}
-.settings-section{margin-bottom:20px;}
-.settings-section-title{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px;font-weight:500;}
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--bg2);border:1px solid var(--border);border-bottom:none;}
-.setting-row:first-of-type{border-radius:var(--radius) var(--radius) 0 0;}
-.setting-row:last-of-type{border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);}
-.setting-row:only-of-type{border-radius:var(--radius);border-bottom:1px solid var(--border);}
-.setting-info{}
-.setting-name{font-size:13px;font-weight:500;}
-.setting-desc{font-size:12px;color:var(--text2);margin-top:2px;}
-.toggle{position:relative;width:40px;height:22px;flex-shrink:0;}
-.toggle input{opacity:0;width:0;height:0;position:absolute;}
-.toggle-track{position:absolute;inset:0;background:var(--bg4);border:1px solid var(--border2);border-radius:11px;cursor:pointer;transition:.2s;}
-.toggle input:checked+.toggle-track{background:var(--green3);border-color:var(--green2);}
-.toggle-track::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:var(--text2);top:2px;left:2px;transition:.2s;}
-.toggle input:checked+.toggle-track::after{background:var(--green);transform:translateX(18px);}
-.select-ctrl{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:5px 10px;font-size:12px;cursor:pointer;}
+/* ═══════════════ PROFILE PAGE ═══════════════ */
+.profile-layout{display:grid;grid-template-columns:280px 1fr;height:100%;gap:1px;background:var(--b1)}
+.profile-side{background:var(--bg);overflow-y:auto;padding:20px}
+.profile-side::-webkit-scrollbar{width:4px}
+.profile-side::-webkit-scrollbar-thumb{background:var(--bg4)}
+.profile-main{background:var(--bg);overflow-y:auto;padding:20px}
+.profile-main::-webkit-scrollbar{width:4px}
+.profile-main::-webkit-scrollbar-thumb{background:var(--bg4)}
+.avatar-wrap{display:flex;flex-direction:column;align-items:center;padding:20px;background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);margin-bottom:14px}
+.avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;margin-bottom:12px}
+.profile-name{font-size:16px;font-weight:700;letter-spacing:-.3px;margin-bottom:2px}
+.profile-email{font-size:12px;color:var(--t2);margin-bottom:10px}
+.profile-plan{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);border-radius:20px;font-size:11px;color:var(--gold);font-weight:600}
+.profile-stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.profile-stat{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:12px;text-align:center}
+.profile-stat-val{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.profile-stat-label{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
+.field-card{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.field-card-title{padding:12px 16px;border-bottom:1px solid var(--b1);font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em}
+.field-row{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--b1)}
+.field-row:last-child{border-bottom:none}
+.field-icon{width:32px;height:32px;border-radius:var(--rs);background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:15px;flex-shrink:0;margin-right:12px}
+.field-label{font-size:10px;color:var(--t3);margin-bottom:2px}
+.field-value{font-size:13px;font-weight:500}
+.field-action{margin-left:auto;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500;border:1px solid var(--b2);color:var(--t2);background:none;cursor:pointer;transition:.12s;white-space:nowrap}
+.field-action:hover{color:var(--t1);border-color:var(--b3)}
 
-/* ── LOADING / ERROR ── */
-.loading{display:flex;align-items:center;justify-content:center;min-height:80px;color:var(--text2);font-size:13px;gap:8px;}
-.spinner{width:15px;height:15px;border:2px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;}
+/* ═══════════════ SETTINGS PAGE ═══════════════ */
+.settings-layout{height:100%;display:grid;grid-template-columns:220px 1fr;gap:1px;background:var(--b1)}
+.settings-nav{background:var(--bg);overflow-y:auto;padding:12px 8px}
+.settings-content{background:var(--bg);overflow-y:auto;padding:20px 24px}
+.settings-content::-webkit-scrollbar{width:4px}
+.settings-content::-webkit-scrollbar-thumb{background:var(--bg4)}
+.settings-nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rs);cursor:pointer;color:var(--t2);font-size:12px;font-weight:500;transition:.12s}
+.settings-nav-item i{font-size:16px;flex-shrink:0}
+.settings-nav-item:hover{color:var(--t1);background:var(--bg3)}
+.settings-nav-item.active{color:var(--t1);background:var(--bg4)}
+.settings-nav-sep{height:1px;background:var(--b1);margin:6px 2px}
+.settings-section{display:none}
+.settings-section.active{display:block}
+.settings-title{font-size:16px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px}
+.settings-sub{font-size:12px;color:var(--t2);margin-bottom:20px}
+.setting-group{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
+.setting-group-title{padding:11px 16px;border-bottom:1px solid var(--b1);font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--b1);gap:16px}
+.setting-row:last-child{border-bottom:none}
+.setting-name{font-size:13px;font-weight:500;margin-bottom:2px}
+.setting-desc{font-size:11px;color:var(--t2)}
+.toggle{position:relative;width:38px;height:20px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:var(--bg4);border:1px solid var(--b2);border-radius:10px;cursor:pointer;transition:.2s}
+.toggle input:checked+.toggle-track{background:rgba(59,130,246,.3);border-color:var(--accent)}
+.toggle-track::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:var(--t3);top:2px;left:2px;transition:.2s}
+.toggle input:checked+.toggle-track::after{background:var(--accent);transform:translateX(18px)}
+.sel{background:var(--bg3);border:1px solid var(--b2);border-radius:5px;color:var(--t1);padding:5px 10px;font-size:12px;cursor:pointer;outline:none}
+.sel:focus{border-color:var(--accent)}
+
+/* ═══════════════ LOADING ═══════════════ */
+.loading{display:flex;align-items:center;justify-content:center;gap:8px;padding:40px;color:var(--t2);font-size:12px}
+.spin{width:14px;height:14px;border:2px solid var(--b2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.err{color:var(--red);font-size:12px;padding:8px 0;}
+.err-msg{color:var(--dn);font-size:11px;padding:6px}
 
-/* ── PAGE HEADER ── */
-.page-header{margin-bottom:20px;}
-.page-title{font-size:20px;font-weight:700;letter-spacing:-.4px;}
-.page-sub{font-size:13px;color:var(--text2);margin-top:3px;}
-
-/* ── MOBILE BOTTOM NAV ── */
-.bottom-nav{display:none;}
-
-/* ── RESPONSIVE ── */
-@media(max-width:768px){
-  .tab-bar{display:none;}
-  .bottom-nav{
-    display:flex;position:fixed;bottom:0;left:0;right:0;
-    background:var(--bg2);border-top:1px solid var(--border);
-    z-index:100;
-  }
-  .bottom-nav .tab-btn{
-    flex:1;flex-direction:column;gap:4px;padding:8px 4px;
-    font-size:10px;justify-content:center;align-items:center;
-    border-radius:0;border:none;
-  }
-  .bottom-nav .tab-btn i{font-size:20px;}
-  .bottom-nav .tab-btn.active{background:var(--green4);color:var(--green);}
-  .content-area{padding:14px 14px 80px;}
-  .metrics{grid-template-columns:1fr 1fr;gap:10px;}
-  .dash-grid{grid-template-columns:1fr;}
-  .bottom-grid{grid-template-columns:1fr;}
-  .news-grid{grid-template-columns:1fr;}
-  .topbar{padding:0 14px;}
-  .live-pill{display:none;}
-  .price-main{font-size:22px;}
+/* MOBILE */
+.bottom-nav{display:none}
+@media(max-width:900px){
+  .topnav{display:none}
+  .btn-outline{display:none}
+  .dash-layout{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .dash-right{display:none}
+  .port-layout{grid-template-columns:1fr}
+  .port-side{display:none}
+  .news-layout{grid-template-columns:1fr}
+  .news-side{display:none}
+  .profile-layout{grid-template-columns:1fr}
+  .profile-side:not(:first-child){display:none}
+  .settings-layout{grid-template-columns:1fr}
+  .settings-nav{display:none}
+  .port-metrics-grid{grid-template-columns:1fr 1fr}
+  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--b1);z-index:100}
+  .bn-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;cursor:pointer;color:var(--t3);font-size:9px;font-weight:500;border:none;background:none;transition:.12s}
+  .bn-btn i{font-size:20px}
+  .bn-btn.active{color:var(--accent)}
+  .app{height:calc(100vh - 32px - 52px - 56px)}
 }
-@media(max-width:400px){
-  .metrics{grid-template-columns:1fr;}
+@media(max-width:600px){
+  .topbar{padding:0 10px}
+  .logo{font-size:15px;min-width:130px}
+  .topbar-right{gap:6px}
+  .btn-accent{padding:5px 10px;font-size:11px}
+  .port-metrics-grid{grid-template-columns:1fr 1fr}
+  .pair-bar{padding:0}
+  .ch-stats{display:none}
+  .mkt-table th:nth-child(n+5),.mkt-table td:nth-child(n+5){display:none}
 }
 </style>
 </head>
 <body>
+
+<!-- TICKER TAPE -->
+<div class="ticker"><div class="ticker-inner" id="ticker-inner"></div></div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo"><div class="logo-icon">N</div>Nex<span>Trade</span></div>
+  <nav class="topnav">
+    <button class="tnav-btn active" onclick="goPage('dashboard')"><i class="ti ti-layout-dashboard" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Dashboard</button>
+    <button class="tnav-btn" onclick="goPage('markets')"><i class="ti ti-chart-bar" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Markets</button>
+    <button class="tnav-btn" onclick="goPage('portfolio')"><i class="ti ti-briefcase" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Portfolio</button>
+    <button class="tnav-btn" onclick="goPage('news')"><i class="ti ti-news" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>News</button>
+  </nav>
+  <div class="topbar-right">
+    <div class="topbar-icon" onclick="goPage('settings')" title="Settings"><i class="ti ti-settings" style="font-size:16px"></i></div>
+    <div class="topbar-icon" onclick="goPage('profile')" title="Profile"><i class="ti ti-user" style="font-size:16px"></i></div>
+    <button class="btn-outline">Log in</button>
+    <button class="btn-accent">Get Started</button>
+  </div>
+</header>
+
 <div class="app">
+  <!-- SIDEBAR ICONS -->
+  <aside class="sidebar">
+    <button class="sb-btn active" data-tip="Dashboard" onclick="goPage('dashboard')"><i class="ti ti-layout-dashboard"></i></button>
+    <button class="sb-btn" data-tip="Markets" onclick="goPage('markets')"><i class="ti ti-chart-bar"></i></button>
+    <button class="sb-btn" data-tip="Portfolio" onclick="goPage('portfolio')"><i class="ti ti-briefcase"></i></button>
+    <button class="sb-btn" data-tip="News" onclick="goPage('news')"><i class="ti ti-news"></i></button>
+    <div class="sb-sep"></div>
+    <button class="sb-btn" data-tip="Profile" onclick="goPage('profile')"><i class="ti ti-user"></i></button>
+    <button class="sb-btn" data-tip="Settings" onclick="goPage('settings')"><i class="ti ti-settings"></i></button>
+  </aside>
 
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <div class="logo">
-      <div class="logo-mark"><i class="ti ti-chart-line" style="font-size:16px;"></i></div>
-      CryptoTrack
-    </div>
-    <div class="topbar-right">
-      <div class="live-pill"><div class="live-dot"></div> Live</div>
-      <div class="icon-btn" onclick="loadAll()" title="Refresh"><i class="ti ti-refresh" style="font-size:16px;"></i></div>
-      <div class="icon-btn" onclick="showTab('profile')" title="Profile"><i class="ti ti-user" style="font-size:16px;"></i></div>
-    </div>
-  </header>
+  <div class="main">
 
-  <div class="body-row">
-
-    <!-- SIDEBAR (desktop) -->
-    <nav class="tab-bar" id="sidebar">
-      <button class="tab-btn active" data-tab="dashboard" onclick="showTab('dashboard')"><i class="ti ti-layout-dashboard"></i> Dashboard</button>
-      <button class="tab-btn" data-tab="markets" onclick="showTab('markets')"><i class="ti ti-chart-bar"></i> Markets</button>
-      <button class="tab-btn" data-tab="news" onclick="showTab('news')"><i class="ti ti-news"></i> News</button>
-      <div class="tab-sep"></div>
-      <button class="tab-btn" data-tab="profile" onclick="showTab('profile')"><i class="ti ti-user"></i> Profile</button>
-      <button class="tab-btn" data-tab="settings" onclick="showTab('settings')"><i class="ti ti-settings"></i> Settings</button>
-    </nav>
-
-    <!-- MAIN CONTENT -->
-    <main class="content-area">
-
-      <!-- ══ DASHBOARD ══ -->
-      <div class="page active" id="page-dashboard">
-        <div class="page-header">
-          <div class="page-title">Dashboard</div>
-          <div class="page-sub" id="last-updated">Loading live prices…</div>
-        </div>
-
-        <div class="metrics">
-          <div class="metric">
-            <div class="metric-label">Portfolio</div>
-            <div class="metric-value">$24,831</div>
-            <div class="metric-sub up"><i class="ti ti-trending-up"></i> +$1,240 today</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Bitcoin</div>
-            <div class="metric-value" id="m-btc">—</div>
-            <div class="metric-sub" id="m-btc-ch"><span class="muted">—</span></div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Ethereum</div>
-            <div class="metric-value" id="m-eth">—</div>
-            <div class="metric-sub" id="m-eth-ch"><span class="muted">—</span></div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Market Cap</div>
-            <div class="metric-value" id="m-mcap">—</div>
-            <div class="metric-sub" id="m-mcap-ch"><span class="muted">—</span></div>
-          </div>
-        </div>
-
-        <div class="dash-grid">
-          <div class="card">
-            <div class="price-head">
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="page active" id="page-dashboard">
+      <div class="dash-layout" style="height:100%">
+        <div class="dash-left">
+          <!-- Pair tabs -->
+          <div class="pair-bar" id="pair-bar"></div>
+          <!-- Chart -->
+          <div class="chart-area">
+            <div class="chart-head">
               <div>
-                <div style="font-size:12px;color:var(--text2);margin-bottom:3px;" id="chart-label">Bitcoin (BTC)</div>
-                <div class="price-main" id="chart-price">$—</div>
-                <div style="font-size:12px;margin-top:3px;" id="chart-change"><span class="muted">—</span></div>
+                <div style="font-size:10px;color:var(--t3);margin-bottom:3px" id="ch-label">BTC/USDT</div>
+                <div class="ch-price up" id="ch-price">$—</div>
+                <div class="ch-change" id="ch-change">—</div>
+              </div>
+              <div class="ch-stats">
+                <div class="ch-stat"><label>24h High</label><span id="ch-high">—</span></div>
+                <div class="ch-stat"><label>24h Low</label><span id="ch-low">—</span></div>
+                <div class="ch-stat"><label>24h Vol</label><span id="ch-vol">—</span></div>
+                <div class="ch-stat"><label>Mkt Cap</label><span id="ch-mcap">—</span></div>
               </div>
               <div class="tf-row">
                 <button class="tf-btn" onclick="setTf(this,'1')">1D</button>
                 <button class="tf-btn active" onclick="setTf(this,'7')">7D</button>
                 <button class="tf-btn" onclick="setTf(this,'30')">1M</button>
                 <button class="tf-btn" onclick="setTf(this,'90')">3M</button>
+                <button class="tf-btn" onclick="setTf(this,'365')">1Y</button>
               </div>
             </div>
-            <div id="chart-loading" class="loading"><div class="spinner"></div> Loading chart…</div>
-            <div class="chart-wrap" id="chart-wrap" style="display:none;">
-              <canvas id="priceChart" role="img" aria-label="Price chart for selected coin"></canvas>
+            <div class="chart-canvas-wrap">
+              <div id="chart-loading" class="loading"><div class="spin"></div> Loading chart…</div>
+              <canvas id="priceChart" style="display:none" role="img" aria-label="Price chart"></canvas>
             </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">Top coins</div>
-            <div id="coin-list-loading" class="loading"><div class="spinner"></div></div>
-            <div class="coin-list" id="coin-list" style="display:none;"></div>
           </div>
         </div>
-
-        <div class="bottom-grid">
-          <div class="card">
-            <div class="card-title">Portfolio allocation</div>
-            <div style="position:relative;height:170px;">
-              <canvas id="donutChart" role="img" aria-label="Portfolio: BTC 45%, ETH 30%, SOL 15%, Other 10%">BTC 45%, ETH 30%, SOL 15%, Other 10%.</canvas>
-            </div>
-            <div class="donut-legend">
-              <div class="leg-item"><div class="leg-dot" style="background:#00ff80;"></div> BTC 45%</div>
-              <div class="leg-item"><div class="leg-dot" style="background:#00cc66;"></div> ETH 30%</div>
-              <div class="leg-item"><div class="leg-dot" style="background:#008844;"></div> SOL 15%</div>
-              <div class="leg-item"><div class="leg-dot" style="background:#3d5c4e;"></div> Other 10%</div>
+        <!-- Order book + trades -->
+        <div class="dash-right" style="display:flex;flex-direction:column">
+          <!-- Order book -->
+          <div style="flex:1.2;display:flex;flex-direction:column;border-bottom:1px solid var(--b1);overflow:hidden">
+            <div class="ob-head"><span class="ob-title">Order Book</span><span style="font-size:10px;color:var(--t3)" id="ob-pair">BTC/USDT</span></div>
+            <div class="ob-cols"><span class="ob-col-label">Price (USDT)</span><span class="ob-col-label">Amount</span><span class="ob-col-label">Total</span></div>
+            <div class="ob-list">
+              <div class="ob-asks" id="ob-asks"></div>
+              <div class="ob-spread"><span class="ob-spread-price up" id="ob-mid">—</span><span class="ob-spread-label">spread</span><span style="font-size:10px;color:var(--t3)" id="ob-spread-val">—</span></div>
+              <div class="ob-bids" id="ob-bids"></div>
             </div>
           </div>
-
-          <div class="card">
-            <div class="card-title">My assets</div>
-            <div class="pf-row"><div class="pf-sym">BTC</div><div class="pf-track"><div class="pf-fill" style="width:75%;background:var(--green);"></div></div><div class="pf-amt">$11,174</div><div class="pf-pct up">+2.3%</div></div>
-            <div class="pf-row"><div class="pf-sym">ETH</div><div class="pf-track"><div class="pf-fill" style="width:50%;background:var(--green2);"></div></div><div class="pf-amt">$7,449</div><div class="pf-pct up">+1.9%</div></div>
-            <div class="pf-row"><div class="pf-sym">SOL</div><div class="pf-track"><div class="pf-fill" style="width:25%;background:#008844;"></div></div><div class="pf-amt">$3,725</div><div class="pf-pct down">-0.9%</div></div>
-            <div class="pf-row"><div class="pf-sym">Other</div><div class="pf-track"><div class="pf-fill" style="width:15%;background:var(--text3);"></div></div><div class="pf-amt">$2,483</div><div class="pf-pct up">+0.4%</div></div>
-            <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:12px;color:var(--text2);">24h P&L</span>
-              <span class="up" style="font-size:15px;font-weight:700;">+$1,240 <span style="font-size:12px;font-weight:400;">(+5.26%)</span></span>
-            </div>
+          <!-- Recent trades -->
+          <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+            <div class="ob-head"><span class="ob-title">Recent Trades</span></div>
+            <div class="ob-cols"><span class="ob-col-label">Price</span><span class="ob-col-label">Amount</span><span class="ob-col-label">Time</span></div>
+            <div style="flex:1;overflow:hidden" id="trades-list"></div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- ══ MARKETS ══ -->
-      <div class="page" id="page-markets">
-        <div class="page-header">
-          <div class="page-title">Markets</div>
-          <div class="page-sub">Live cryptocurrency prices</div>
+    <!-- ═══ MARKETS ═══ -->
+    <div class="page" id="page-markets">
+      <div class="mkt-layout">
+        <div class="mkt-filters">
+          <button class="filter-btn active" onclick="filterMkt(this,'all')">All</button>
+          <button class="filter-btn" onclick="filterMkt(this,'top')">Top 10</button>
+          <button class="filter-btn" onclick="filterMkt(this,'defi')">DeFi</button>
+          <button class="filter-btn" onclick="filterMkt(this,'layer1')">Layer 1</button>
+          <button class="filter-btn" onclick="filterMkt(this,'stablecoin')">Stablecoins</button>
+          <div class="search-box"><i class="ti ti-search" style="font-size:14px;color:var(--t3)"></i><input id="mkt-search" placeholder="Search coin…" oninput="filterSearch(this.value)"></div>
         </div>
-        <div class="card">
-          <div id="mkt-loading" class="loading"><div class="spinner"></div> Loading markets…</div>
-          <div id="mkt-content" style="display:none;">
-            <table class="mkt-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Coin</th>
-                  <th class="right">Price</th>
-                  <th class="right">24h</th>
-                  <th class="right">7d</th>
-                  <th class="right">Market Cap</th>
-                  <th class="right">Volume 24h</th>
-                </tr>
-              </thead>
-              <tbody id="mkt-body"></tbody>
+        <div class="mkt-table-wrap">
+          <div id="mkt-loading" class="loading"><div class="spin"></div> Loading markets…</div>
+          <table class="mkt-table" id="mkt-table" style="display:none">
+            <thead><tr>
+              <th style="width:40px">#</th>
+              <th style="text-align:left">Name</th>
+              <th>Price</th>
+              <th>24h %</th>
+              <th>7d %</th>
+              <th>Market Cap</th>
+              <th>Volume 24h</th>
+              <th>Circ. Supply</th>
+              <th>7d Chart</th>
+              <th></th>
+            </tr></thead>
+            <tbody id="mkt-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PORTFOLIO ═══ -->
+    <div class="page" id="page-portfolio">
+      <div class="port-layout">
+        <div class="port-main">
+          <div class="port-hero">
+            <div class="port-total-label">Total Portfolio Value</div>
+            <div class="port-total">$24,831.42</div>
+            <div class="port-sub">
+              <span class="badge badge-up"><i class="ti ti-trending-up" style="font-size:11px;vertical-align:-1px"></i> +$1,240.18 (+5.26%) today</span>
+              <span style="font-size:12px;color:var(--t2)">Updated just now</span>
+            </div>
+          </div>
+          <div class="port-metrics-grid">
+            <div class="port-metric"><div class="port-metric-label">All-time P&L</div><div class="port-metric-val up">+$8,431</div></div>
+            <div class="port-metric"><div class="port-metric-label">Best asset</div><div class="port-metric-val">BTC <span class="up" style="font-size:11px">+68%</span></div></div>
+            <div class="port-metric"><div class="port-metric-label">Assets</div><div class="port-metric-val">6</div></div>
+            <div class="port-metric"><div class="port-metric-label">Risk score</div><div class="port-metric-val" style="color:var(--gold)">Medium</div></div>
+          </div>
+          <div style="padding:16px">
+            <div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Holdings</div>
+            <table class="asset-table" id="asset-table">
+              <thead><tr>
+                <th>Asset</th><th>Price</th><th>24h</th><th>Holdings</th><th>Value</th><th>Allocation</th><th>P&L</th>
+              </tr></thead>
+              <tbody id="asset-body">
+                <tr><td colspan="7"><div class="loading"><div class="spin"></div> Loading…</div></td></tr>
+              </tbody>
             </table>
           </div>
-        </div>
-      </div>
-
-      <!-- ══ NEWS ══ -->
-      <div class="page" id="page-news">
-        <div class="page-header">
-          <div class="page-title">News</div>
-          <div class="page-sub">Latest crypto news</div>
-        </div>
-        <div id="news-loading" class="loading"><div class="spinner"></div> Loading news…</div>
-        <div class="news-grid" id="news-grid" style="display:none;"></div>
-      </div>
-
-      <!-- ══ PROFILE ══ -->
-      <div class="page" id="page-profile">
-        <div class="page-header">
-          <div class="page-title">Profile</div>
-          <div class="page-sub">Your account information</div>
-        </div>
-        <div class="profile-wrap">
-          <div class="profile-hero">
-            <div class="profile-avatar">CT</div>
-            <div>
-              <div class="profile-name">CryptoTracker</div>
-              <div class="profile-sub">crypto@email.com</div>
-              <div class="profile-badge"><i class="ti ti-star" style="font-size:12px;"></i> Pro Plan</div>
+          <!-- Donut -->
+          <div style="padding:0 16px 16px">
+            <div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Allocation</div>
+            <div style="display:flex;align-items:center;gap:24px;background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:16px">
+              <div style="position:relative;width:140px;height:140px;flex-shrink:0"><canvas id="donutChart" role="img" aria-label="Allocation chart"></canvas></div>
+              <div id="donut-legend" style="display:flex;flex-direction:column;gap:8px"></div>
             </div>
           </div>
+        </div>
+        <!-- Portfolio chart side -->
+        <div class="port-side">
+          <div style="padding:14px;border-bottom:1px solid var(--b1)">
+            <div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Portfolio History</div>
+            <div style="position:relative;height:160px"><canvas id="portChart" role="img" aria-label="Portfolio chart"></canvas></div>
+          </div>
+          <div style="padding:14px">
+            <div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Quick Trade</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+              <button onclick="this.style.background='rgba(0,200,150,.2)';this.style.color='var(--up)';document.getElementById('qt-sell').style.background='var(--bg3)';document.getElementById('qt-sell').style.color='var(--t2)'" style="padding:8px;border-radius:var(--rs);border:1px solid var(--up);background:rgba(0,200,150,.15);color:var(--up);font-weight:600;font-size:12px;cursor:pointer">Buy</button>
+              <button id="qt-sell" onclick="this.style.background='rgba(240,71,90,.2)';this.style.color='var(--dn)';document.querySelector('[onclick*=qt-sell]').previousElementSibling.style.background='var(--bg3)'" style="padding:8px;border-radius:var(--rs);border:1px solid var(--b2);background:var(--bg3);color:var(--t2);font-weight:600;font-size:12px;cursor:pointer">Sell</button>
+            </div>
+            <div style="margin-bottom:8px">
+              <div style="font-size:10px;color:var(--t3);margin-bottom:4px">Pair</div>
+              <select class="sel" style="width:100%"><option>BTC/USDT</option><option>ETH/USDT</option><option>SOL/USDT</option><option>BNB/USDT</option></select>
+            </div>
+            <div style="margin-bottom:8px">
+              <div style="font-size:10px;color:var(--t3);margin-bottom:4px">Amount (USDT)</div>
+              <input style="width:100%;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--rs);padding:7px 10px;color:var(--t1);font-size:13px;outline:none" placeholder="0.00" type="number">
+            </div>
+            <div style="margin-bottom:12px">
+              <div style="font-size:10px;color:var(--t3);margin-bottom:4px">Order type</div>
+              <select class="sel" style="width:100%"><option>Market</option><option>Limit</option><option>Stop-limit</option></select>
+            </div>
+            <button style="width:100%;padding:10px;border-radius:var(--rs);background:var(--up);color:#fff;font-weight:700;font-size:13px;border:none;cursor:pointer">Place Order</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-          <div class="field-group">
-            <div class="field-row">
-              <div class="field-icon"><i class="ti ti-user"></i></div>
-              <div><div class="field-label">Full name</div><div class="field-value">CryptoTracker</div></div>
-              <button class="field-action">Edit</button>
-            </div>
-            <div class="field-row">
-              <div class="field-icon"><i class="ti ti-mail"></i></div>
-              <div><div class="field-label">Email</div><div class="field-value">crypto@email.com</div></div>
-              <button class="field-action">Edit</button>
-            </div>
-            <div class="field-row">
-              <div class="field-icon"><i class="ti ti-phone"></i></div>
-              <div><div class="field-label">Phone</div><div class="field-value">+1 (555) 000-1234</div></div>
-              <button class="field-action">Edit</button>
-            </div>
-            <div class="field-row">
-              <div class="field-icon"><i class="ti ti-map-pin"></i></div>
-              <div><div class="field-label">Location</div><div class="field-value">United States</div></div>
-              <button class="field-action">Edit</button>
+    <!-- ═══ NEWS ═══ -->
+    <div class="page" id="page-news">
+      <div class="news-layout">
+        <div class="news-main">
+          <div class="news-filters">
+            <button class="filter-btn active" onclick="filterNews(this,'all')">All</button>
+            <button class="filter-btn" onclick="filterNews(this,'bitcoin')">Bitcoin</button>
+            <button class="filter-btn" onclick="filterNews(this,'ethereum')">Ethereum</button>
+            <button class="filter-btn" onclick="filterNews(this,'defi')">DeFi</button>
+            <button class="filter-btn" onclick="filterNews(this,'regulation')">Regulation</button>
+          </div>
+          <div id="news-container"></div>
+        </div>
+        <div class="news-side">
+          <div style="padding:12px 14px;border-bottom:1px solid var(--b1)">
+            <div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em">Trending</div>
+          </div>
+          <div id="trending-list"></div>
+          <div style="padding:12px 14px;border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);margin-top:8px">
+            <div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Fear & Greed Index</div>
+            <div style="background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:16px;text-align:center">
+              <div style="font-size:40px;font-weight:800;color:var(--gold)">72</div>
+              <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:8px">Greed</div>
+              <div style="background:var(--bg4);border-radius:4px;height:6px;overflow:hidden">
+                <div style="background:linear-gradient(90deg,var(--dn),var(--gold),var(--up));height:100%"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t3);margin-top:4px"><span>Fear</span><span>Greed</span></div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
 
-          <div class="field-group">
+    <!-- ═══ PROFILE ═══ -->
+    <div class="page" id="page-profile">
+      <div class="profile-layout">
+        <div class="profile-side">
+          <div class="avatar-wrap">
+            <div class="avatar">CT</div>
+            <div class="profile-name">CryptoTrader</div>
+            <div class="profile-email">trader@nextrade.io</div>
+            <div class="profile-plan"><i class="ti ti-crown" style="font-size:12px"></i> Pro Trader</div>
+          </div>
+          <div class="profile-stat-row">
+            <div class="profile-stat"><div class="profile-stat-val up">$24,831</div><div class="profile-stat-label">Portfolio</div></div>
+            <div class="profile-stat"><div class="profile-stat-val up">+68%</div><div class="profile-stat-label">Total ROI</div></div>
+            <div class="profile-stat"><div class="profile-stat-val">342</div><div class="profile-stat-label">Trades</div></div>
+            <div class="profile-stat"><div class="profile-stat-val" style="color:var(--gold)">18</div><div class="profile-stat-label">Days streak</div></div>
+          </div>
+          <div class="field-card">
+            <div class="field-card-title">Verification</div>
             <div class="field-row">
-              <div class="field-icon" style="background:rgba(0,204,102,.1);"><i class="ti ti-crown" style="color:var(--green2);"></i></div>
+              <div class="field-icon" style="background:var(--up2);color:var(--up)"><i class="ti ti-shield-check"></i></div>
+              <div><div class="field-label">KYC Status</div><div class="field-value up">Verified</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field-icon" style="background:var(--up2);color:var(--up)"><i class="ti ti-lock"></i></div>
+              <div><div class="field-label">2FA</div><div class="field-value">Enabled</div></div>
+              <button class="field-action">Manage</button>
+            </div>
+            <div class="field-row">
+              <div class="field-icon" style="background:var(--accent2);color:var(--accent)"><i class="ti ti-star"></i></div>
               <div><div class="field-label">Plan</div><div class="field-value">Pro — $9.99/mo</div></div>
               <button class="field-action">Upgrade</button>
             </div>
-            <div class="field-row">
-              <div class="field-icon" style="background:rgba(0,204,102,.1);"><i class="ti ti-calendar" style="color:var(--green2);"></i></div>
-              <div><div class="field-label">Member since</div><div class="field-value">January 2024</div></div>
-            </div>
-            <div class="field-row">
-              <div class="field-icon" style="background:rgba(0,204,102,.1);"><i class="ti ti-shield-check" style="color:var(--green2);"></i></div>
-              <div><div class="field-label">2FA Security</div><div class="field-value">Enabled</div></div>
-              <button class="field-action">Manage</button>
+          </div>
+        </div>
+        <div class="profile-main">
+          <div class="field-card" style="margin-bottom:14px">
+            <div class="field-card-title">Personal Information</div>
+            <div class="field-row"><div class="field-icon"><i class="ti ti-user"></i></div><div><div class="field-label">Full Name</div><div class="field-value">CryptoTrader</div></div><button class="field-action">Edit</button></div>
+            <div class="field-row"><div class="field-icon"><i class="ti ti-mail"></i></div><div><div class="field-label">Email</div><div class="field-value">trader@nextrade.io</div></div><button class="field-action">Edit</button></div>
+            <div class="field-row"><div class="field-icon"><i class="ti ti-phone"></i></div><div><div class="field-label">Phone</div><div class="field-value">+1 (555) 000-1234</div></div><button class="field-action">Edit</button></div>
+            <div class="field-row"><div class="field-icon"><i class="ti ti-map-pin"></i></div><div><div class="field-label">Country</div><div class="field-value">United States</div></div><button class="field-action">Edit</button></div>
+          </div>
+          <div class="field-card" style="margin-bottom:14px">
+            <div class="field-card-title">Trading Statistics</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b1)">
+              <div style="background:var(--bg2);padding:14px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--up)">$48,230</div><div style="font-size:10px;color:var(--t3);margin-top:3px">Total bought</div></div>
+              <div style="background:var(--bg2);padding:14px;text-align:center"><div style="font-size:18px;font-weight:700">342</div><div style="font-size:10px;color:var(--t3);margin-top:3px">Total trades</div></div>
+              <div style="background:var(--bg2);padding:14px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--up)">64%</div><div style="font-size:10px;color:var(--t3);margin-top:3px">Win rate</div></div>
             </div>
           </div>
-
-          <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;">
-            <div style="font-size:13px;color:var(--red);">Sign out</div>
-            <i class="ti ti-logout" style="color:var(--red);font-size:18px;cursor:pointer;"></i>
+          <div class="field-card">
+            <div class="field-card-title">API Keys</div>
+            <div class="field-row"><div class="field-icon"><i class="ti ti-key"></i></div><div><div class="field-label">API Key 1</div><div class="field-value" style="font-family:monospace;font-size:12px">nt_live_••••••••••••4f8a</div></div><button class="field-action"><i class="ti ti-copy" style="font-size:12px;vertical-align:-1px"></i> Copy</button></div>
+            <div class="field-row" style="padding:10px 16px"><button style="padding:6px 14px;border-radius:var(--rs);background:var(--accent2);color:var(--accent);border:1px solid var(--accent);font-size:12px;font-weight:600;cursor:pointer"><i class="ti ti-plus" style="font-size:12px;vertical-align:-1px"></i> Generate new key</button></div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- ══ SETTINGS ══ -->
-      <div class="page" id="page-settings">
-        <div class="page-header">
-          <div class="page-title">Settings</div>
-          <div class="page-sub">Customize your experience</div>
-        </div>
-        <div class="settings-wrap">
-
-          <div class="settings-section">
-            <div class="settings-section-title">Notifications</div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Price alerts</div><div class="setting-desc">Notify when price hits target</div></div>
-              <label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label>
+    <!-- ═══ SETTINGS ═══ -->
+    <div class="page" id="page-settings">
+      <div class="settings-layout">
+        <nav class="settings-nav">
+          <div class="settings-nav-item active" onclick="showSettingsSection(this,'general')"><i class="ti ti-sliders"></i> General</div>
+          <div class="settings-nav-item" onclick="showSettingsSection(this,'notifications')"><i class="ti ti-bell"></i> Notifications</div>
+          <div class="settings-nav-item" onclick="showSettingsSection(this,'security')"><i class="ti ti-shield"></i> Security</div>
+          <div class="settings-nav-item" onclick="showSettingsSection(this,'appearance')"><i class="ti ti-palette"></i> Appearance</div>
+          <div class="settings-nav-sep"></div>
+          <div class="settings-nav-item" onclick="showSettingsSection(this,'api')"><i class="ti ti-api"></i> API</div>
+          <div class="settings-nav-item" onclick="showSettingsSection(this,'billing')"><i class="ti ti-credit-card"></i> Billing</div>
+        </nav>
+        <div class="settings-content">
+          <!-- General -->
+          <div class="settings-section active" id="ss-general">
+            <div class="settings-title">General</div>
+            <div class="settings-sub">Configure your trading preferences</div>
+            <div class="setting-group">
+              <div class="setting-group-title">Display</div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Currency</div><div class="setting-desc">Display prices in</div></div><select class="sel"><option>USD $</option><option>EUR €</option><option>GBP £</option><option>BTC ₿</option></select></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Language</div><div class="setting-desc">Interface language</div></div><select class="sel"><option>English</option><option>Español</option><option>中文</option><option>Українська</option></select></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Timezone</div><div class="setting-desc">Chart timestamps</div></div><select class="sel"><option>UTC+0</option><option>UTC+2</option><option>UTC-5</option><option>UTC+8</option></select></div>
             </div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">News alerts</div><div class="setting-desc">Breaking crypto news</div></div>
-              <label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label>
-            </div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Portfolio updates</div><div class="setting-desc">Daily portfolio summary</div></div>
-              <label class="toggle"><input type="checkbox"><div class="toggle-track"></div></label>
+            <div class="setting-group">
+              <div class="setting-group-title">Trading</div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Confirm orders</div><div class="setting-desc">Show confirmation before placing</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Auto-refresh prices</div><div class="setting-desc">Update every 30 seconds</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Show order history</div><div class="setting-desc">Display recent trades on chart</div></div><label class="toggle"><input type="checkbox"><div class="toggle-track"></div></label></div>
             </div>
           </div>
-
-          <div class="settings-section">
-            <div class="settings-section-title">Display</div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Currency</div><div class="setting-desc">Default display currency</div></div>
-              <select class="select-ctrl"><option>USD $</option><option>EUR €</option><option>GBP £</option><option>BTC ₿</option></select>
+          <!-- Notifications -->
+          <div class="settings-section" id="ss-notifications">
+            <div class="settings-title">Notifications</div>
+            <div class="settings-sub">Control what alerts you receive</div>
+            <div class="setting-group">
+              <div class="setting-group-title">Price Alerts</div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Price target hit</div><div class="setting-desc">When your set price target is reached</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Large price movement</div><div class="setting-desc">When any coin moves >5% in 1 hour</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">New all-time high</div><div class="setting-desc">When a coin breaks its ATH</div></div><label class="toggle"><input type="checkbox"><div class="toggle-track"></div></label></div>
             </div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Price decimals</div><div class="setting-desc">Number of decimal places</div></div>
-              <select class="select-ctrl"><option>2</option><option>4</option><option>6</option></select>
-            </div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Compact numbers</div><div class="setting-desc">Show 1.2M instead of 1,200,000</div></div>
-              <label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label>
-            </div>
-          </div>
-
-          <div class="settings-section">
-            <div class="settings-section-title">Data</div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Auto-refresh</div><div class="setting-desc">Update prices every minute</div></div>
-              <label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label>
-            </div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Data source</div><div class="setting-desc">Market data provider</div></div>
-              <select class="select-ctrl"><option>CoinGecko</option><option>CoinMarketCap</option></select>
+            <div class="setting-group">
+              <div class="setting-group-title">Account</div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Order filled</div><div class="setting-desc">When your limit order executes</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Login alert</div><div class="setting-desc">When a new device logs in</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Weekly report</div><div class="setting-desc">Portfolio summary every Monday</div></div><label class="toggle"><input type="checkbox"><div class="toggle-track"></div></label></div>
             </div>
           </div>
-
-          <div class="settings-section">
-            <div class="settings-section-title">Danger zone</div>
-            <div class="setting-row" style="cursor:pointer;" onclick="alert('Portfolio cleared (demo)')">
-              <div class="setting-info"><div class="setting-name" style="color:var(--red);">Clear portfolio data</div><div class="setting-desc">Remove all tracked assets</div></div>
-              <i class="ti ti-trash" style="color:var(--red);font-size:18px;"></i>
+          <!-- Security -->
+          <div class="settings-section" id="ss-security">
+            <div class="settings-title">Security</div>
+            <div class="settings-sub">Protect your account</div>
+            <div class="setting-group">
+              <div class="setting-group-title">Authentication</div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Two-factor authentication</div><div class="setting-desc">Currently enabled via authenticator app</div></div><button class="field-action" style="margin-left:auto">Manage</button></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Biometric login</div><div class="setting-desc">Use Face ID or fingerprint</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Session timeout</div><div class="setting-desc">Auto-logout after inactivity</div></div><select class="sel"><option>30 min</option><option>1 hour</option><option>4 hours</option><option>Never</option></select></div>
+            </div>
+            <div class="setting-group">
+              <div class="setting-group-title">Withdrawals</div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Withdrawal whitelist</div><div class="setting-desc">Only allow pre-approved addresses</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">24h withdrawal lock</div><div class="setting-desc">Lock new addresses for 24 hours</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div></label></div>
             </div>
           </div>
-
+          <!-- Appearance -->
+          <div class="settings-section" id="ss-appearance">
+            <div class="settings-title">Appearance</div>
+            <div class="settings-sub">Customize the look</div>
+            <div class="setting-group">
+              <div class="setting-group-title">Theme</div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Color theme</div><div class="setting-desc">Interface color mode</div></div><select class="sel"><option>Dark (default)</option><option>Light</option><option>Auto</option></select></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Chart style</div><div class="setting-desc">Default chart type</div></div><select class="sel"><option>Line</option><option>Candlestick</option><option>Area</option></select></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">Compact mode</div><div class="setting-desc">Denser information layout</div></div><label class="toggle"><input type="checkbox"><div class="toggle-track"></div></label></div>
+            </div>
+          </div>
+          <!-- API -->
+          <div class="settings-section" id="ss-api">
+            <div class="settings-title">API</div>
+            <div class="settings-sub">Manage API access keys</div>
+            <div class="setting-group">
+              <div class="setting-group-title">Active Keys</div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name">nt_live_••••4f8a</div><div class="setting-desc">Created Jan 12, 2024 · Read only</div></div><button class="field-action" style="color:var(--dn);border-color:var(--dn2);margin-left:auto">Revoke</button></div>
+            </div>
+            <button style="padding:8px 16px;border-radius:var(--rs);background:var(--accent);color:#fff;font-weight:600;font-size:12px;border:none;cursor:pointer;margin-top:4px"><i class="ti ti-plus" style="font-size:12px;vertical-align:-1px"></i> Generate API key</button>
+          </div>
+          <!-- Billing -->
+          <div class="settings-section" id="ss-billing">
+            <div class="settings-title">Billing</div>
+            <div class="settings-sub">Manage your subscription</div>
+            <div class="setting-group">
+              <div class="setting-group-title">Current Plan</div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-name" style="color:var(--gold)">Pro Trader — $9.99/month</div><div class="setting-desc">Next billing: February 1, 2025</div></div><button class="field-action" style="margin-left:auto">Cancel</button></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+              <div style="background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:16px;text-align:center"><div style="font-size:11px;color:var(--t3);margin-bottom:6px">Free</div><div style="font-size:20px;font-weight:700">$0</div><div style="font-size:10px;color:var(--t2);margin-top:4px">Basic features</div></div>
+              <div style="background:var(--bg2);border:2px solid var(--accent);border-radius:var(--r);padding:16px;text-align:center"><div style="font-size:11px;color:var(--accent);margin-bottom:6px;font-weight:600">PRO ✓</div><div style="font-size:20px;font-weight:700">$9.99</div><div style="font-size:10px;color:var(--t2);margin-top:4px">Advanced tools</div></div>
+              <div style="background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:16px;text-align:center"><div style="font-size:11px;color:var(--gold);margin-bottom:6px">Enterprise</div><div style="font-size:20px;font-weight:700">$49</div><div style="font-size:10px;color:var(--t2);margin-top:4px">All features</div></div>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
 
-    </main>
   </div>
-
-  <!-- BOTTOM NAV (mobile) -->
-  <nav class="bottom-nav" id="bottom-nav">
-    <button class="tab-btn active" data-tab="dashboard" onclick="showTab('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
-    <button class="tab-btn" data-tab="markets" onclick="showTab('markets')"><i class="ti ti-chart-bar"></i>Markets</button>
-    <button class="tab-btn" data-tab="news" onclick="showTab('news')"><i class="ti ti-news"></i>News</button>
-    <button class="tab-btn" data-tab="profile" onclick="showTab('profile')"><i class="ti ti-user"></i>Profile</button>
-    <button class="tab-btn" data-tab="settings" onclick="showTab('settings')"><i class="ti ti-settings"></i>Settings</button>
-  </nav>
 </div>
 
+<!-- MOBILE BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bn-btn active" onclick="goPage('dashboard')"><i class="ti ti-layout-dashboard"></i>Trade</button>
+  <button class="bn-btn" onclick="goPage('markets')"><i class="ti ti-chart-bar"></i>Markets</button>
+  <button class="bn-btn" onclick="goPage('portfolio')"><i class="ti ti-briefcase"></i>Portfolio</button>
+  <button class="bn-btn" onclick="goPage('news')"><i class="ti ti-news"></i>News</button>
+  <button class="bn-btn" onclick="goPage('profile')"><i class="ti ti-user"></i>Profile</button>
+</nav>
+
 <script>
-/* ── TAB ROUTING ── */
-function showTab(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  document.querySelectorAll('.tab-btn[data-tab]').forEach(b => {
-    b.classList.toggle('active', b.dataset.tab === id);
+// ─── ROUTING ───
+const PAGES = ['dashboard','markets','portfolio','news','profile','settings'];
+function goPage(id) {
+  PAGES.forEach(p => {
+    document.getElementById('page-'+p).classList.toggle('active', p===id);
   });
-  if (id === 'markets' && !mktLoaded) loadMarkets();
-  if (id === 'news' && !newsLoaded) loadNews();
+  document.querySelectorAll('.tnav-btn').forEach((b,i) => b.classList.toggle('active', ['dashboard','markets','portfolio','news'].indexOf(id)===i));
+  document.querySelectorAll('.sb-btn[data-tip]').forEach(b => b.classList.toggle('active', b.getAttribute('data-tip').toLowerCase()===id));
+  document.querySelectorAll('.bn-btn').forEach((b,i) => b.classList.toggle('active', ['dashboard','markets','portfolio','news','profile'].indexOf(id)===i));
+  if (id==='markets' && !mktLoaded) loadMarkets();
+  if (id==='portfolio' && !portLoaded) loadPortfolio();
+  if (id==='news') loadNews();
 }
 
-/* ── DATA ── */
+// ─── DATA ───
 const COINS = [
-  { id:'bitcoin',      sym:'BTC', name:'Bitcoin',   icon:'₿', color:'#00ff80', bg:'rgba(0,255,128,.12)' },
-  { id:'ethereum',     sym:'ETH', name:'Ethereum',  icon:'Ξ', color:'#00cc66', bg:'rgba(0,204,102,.12)' },
-  { id:'solana',       sym:'SOL', name:'Solana',    icon:'◎', color:'#00aa55', bg:'rgba(0,170,85,.12)'  },
-  { id:'binancecoin',  sym:'BNB', name:'BNB',       icon:'B', color:'#88ff44', bg:'rgba(136,255,68,.10)'},
-  { id:'ripple',       sym:'XRP', name:'XRP',       icon:'✕', color:'#44ddaa', bg:'rgba(68,221,170,.10)'},
+  {id:'bitcoin',    sym:'BTC', name:'Bitcoin',   color:'#f7931a', bg:'rgba(247,147,26,.15)',  qty:0.165,  avgCost:38200},
+  {id:'ethereum',   sym:'ETH', name:'Ethereum',  color:'#627eea', bg:'rgba(98,126,234,.15)',  qty:2.12,   avgCost:2100},
+  {id:'solana',     sym:'SOL', name:'Solana',    color:'#9945ff', bg:'rgba(153,69,255,.15)',  qty:20.9,   avgCost:110},
+  {id:'binancecoin',sym:'BNB', name:'BNB',       color:'#f3ba2f', bg:'rgba(243,186,47,.15)',  qty:6.1,    avgCost:280},
+  {id:'ripple',     sym:'XRP', name:'XRP',       color:'#00aae4', bg:'rgba(0,170,228,.15)',   qty:2100,   avgCost:0.42},
+  {id:'cardano',    sym:'ADA', name:'Cardano',   color:'#0d1e7a', bg:'rgba(13,30,122,.25)',   qty:4200,   avgCost:0.55},
 ];
-
 let priceData = {};
 let selectedCoin = COINS[0];
 let currentDays = '7';
 let priceChart = null;
 let mktLoaded = false;
-let newsLoaded = false;
+let portLoaded = false;
+let mktData = [];
 
-function fmt(n) {
-  if (!n && n!==0) return '—';
-  if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
-  if (n >= 1e9)  return '$' + (n/1e9).toFixed(2) + 'B';
-  if (n >= 1e6)  return '$' + (n/1e6).toFixed(2) + 'M';
-  if (n >= 1000) return '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  return '$' + n.toFixed(n < 1 ? 4 : 2);
+// ─── FORMAT ───
+function fmt(n,d=2){
+  if(n==null||isNaN(n))return'—';
+  if(n>=1e12)return'$'+(n/1e12).toFixed(2)+'T';
+  if(n>=1e9)return'$'+(n/1e9).toFixed(2)+'B';
+  if(n>=1e6)return'$'+(n/1e6).toFixed(2)+'M';
+  if(n>=1000)return'$'+n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+  return'$'+n.toFixed(n<1?4:d);
 }
-function chHtml(v, showIcon=true) {
-  if (v==null) return '<span class="muted">—</span>';
-  const cls = v>=0?'up':'down';
-  const icon = showIcon ? `<i class="ti ti-trending-${v>=0?'up':'down'}"></i> ` : '';
-  return `<span class="${cls}">${icon}${v>=0?'+':''}${v.toFixed(2)}%</span>`;
+function fmtN(n,d=2){
+  if(n==null||isNaN(n))return'—';
+  if(n>=1e12)return(n/1e12).toFixed(2)+'T';
+  if(n>=1e9)return(n/1e9).toFixed(2)+'B';
+  if(n>=1e6)return(n/1e6).toFixed(2)+'M';
+  return n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+}
+function chBadge(v){
+  if(v==null)return'<span style="color:var(--t3)">—</span>';
+  const c=v>=0?'var(--up)':'var(--dn)';
+  return`<span style="color:${c};font-weight:600">${v>=0?'+':''}${v.toFixed(2)}%</span>`;
 }
 
-/* ── LOAD PRICES ── */
-async function loadPrices() {
-  try {
-    const ids = COINS.map(c=>c.id).join(',');
-    const r = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&price_change_percentage=24h,7d`);
-    const data = await r.json();
-    data.forEach(d => { priceData[d.id] = d; });
+// ─── TICKER ───
+const TICKER_COINS = ['bitcoin','ethereum','solana','binancecoin','ripple','cardano','polkadot','chainlink'];
+async function buildTicker(){
+  try{
+    const r=await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${TICKER_COINS.join(',')}&order=market_cap_desc`);
+    const data=await r.json();
+    const items=data.map(d=>{
+      const ch=d.price_change_percentage_24h;
+      return`<div class="tick-item"><span class="tick-sym">${d.symbol.toUpperCase()}</span><span class="tick-price">${fmt(d.current_price)}</span><span class="${ch>=0?'up':'dn'}">${ch>=0?'+':''}${ch.toFixed(2)}%</span></div>`;
+    }).join('');
+    const el=document.getElementById('ticker-inner');
+    el.innerHTML=items+items;
+  }catch(e){}
+}
 
-    const btc = priceData['bitcoin'];
-    const eth = priceData['ethereum'];
-    if (btc) {
-      document.getElementById('m-btc').textContent = fmt(btc.current_price);
-      document.getElementById('m-btc-ch').innerHTML = chHtml(btc.price_change_percentage_24h);
-    }
-    if (eth) {
-      document.getElementById('m-eth').textContent = fmt(eth.current_price);
-      document.getElementById('m-eth-ch').innerHTML = chHtml(eth.price_change_percentage_24h);
-    }
-    renderCoinList();
+// ─── PRICES ───
+async function loadPrices(){
+  try{
+    const ids=COINS.map(c=>c.id).join(',');
+    const r=await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&price_change_percentage=24h,7d`);
+    const data=await r.json();
+    data.forEach(d=>{priceData[d.id]=d;});
+    buildPairBar();
     updateChartHead();
-    document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-  } catch(e) {
-    document.getElementById('coin-list-loading').innerHTML = '<div class="err">Could not load prices.</div>';
-  }
+    buildOrderBook();
+    buildTrades();
+  }catch(e){}
 }
 
-async function loadGlobal() {
-  try {
-    const r = await fetch('https://api.coingecko.com/api/v3/global');
-    const d = (await r.json()).data;
-    document.getElementById('m-mcap').textContent = fmt(d.total_market_cap.usd);
-    document.getElementById('m-mcap-ch').innerHTML = chHtml(d.market_cap_change_percentage_24h_usd);
-  } catch(e){}
-}
-
-function renderCoinList() {
-  const list = document.getElementById('coin-list');
-  list.innerHTML = '';
-  COINS.forEach(coin => {
-    const d = priceData[coin.id];
-    if (!d) return;
-    const row = document.createElement('div');
-    row.className = 'coin-row' + (coin.id===selectedCoin.id?' active':'');
-    row.innerHTML = `
-      <div class="coin-ic" style="background:${coin.bg};color:${coin.color};">${coin.icon}</div>
-      <div class="coin-nm"><div class="coin-nm-main">${coin.name}</div><div class="coin-nm-sub">${coin.sym}</div></div>
-      <div class="coin-pr">
-        <div class="coin-pr-v">${fmt(d.current_price)}</div>
-        <div class="coin-pr-c ${d.price_change_percentage_24h>=0?'up':'down'}">${d.price_change_percentage_24h>=0?'+':''}${d.price_change_percentage_24h.toFixed(2)}%</div>
-      </div>`;
-    row.onclick = () => {
-      selectedCoin = coin;
-      document.querySelectorAll('.coin-row').forEach(r=>r.classList.remove('active'));
-      row.classList.add('active');
+// ─── PAIR BAR ───
+function buildPairBar(){
+  const bar=document.getElementById('pair-bar');
+  bar.innerHTML='';
+  COINS.forEach((c,i)=>{
+    const d=priceData[c.id];
+    if(!d)return;
+    const ch=d.price_change_percentage_24h;
+    const el=document.createElement('div');
+    el.className='pair-tab'+(i===0?' active':'');
+    el.innerHTML=`<div><span class="pair-sym">${c.sym}</span><span class="pair-usdt">/USDT</span></div><div><div class="pair-price-sm">${fmt(d.current_price)}</div><div class="pair-ch-sm ${ch>=0?'up':'dn'}">${ch>=0?'+':''}${ch.toFixed(2)}%</div></div>`;
+    el.onclick=()=>{
+      document.querySelectorAll('.pair-tab').forEach(t=>t.classList.remove('active'));
+      el.classList.add('active');
+      selectedCoin=c;
       updateChartHead();
+      buildOrderBook();
+      buildTrades();
       loadChart();
     };
-    list.appendChild(row);
+    bar.appendChild(el);
   });
-  document.getElementById('coin-list-loading').style.display = 'none';
-  list.style.display = 'flex';
 }
 
-function updateChartHead() {
-  const d = priceData[selectedCoin.id];
-  document.getElementById('chart-label').textContent = `${selectedCoin.name} (${selectedCoin.sym})`;
-  if (d) {
-    document.getElementById('chart-price').textContent = fmt(d.current_price);
-    document.getElementById('chart-change').innerHTML = chHtml(d.price_change_percentage_24h);
+function updateChartHead(){
+  const d=priceData[selectedCoin.id];
+  document.getElementById('ch-label').textContent=`${selectedCoin.sym}/USDT`;
+  document.getElementById('ob-pair').textContent=`${selectedCoin.sym}/USDT`;
+  if(d){
+    const ch=d.price_change_percentage_24h;
+    document.getElementById('ch-price').textContent=fmt(d.current_price);
+    document.getElementById('ch-price').className='ch-price '+(ch>=0?'up':'dn');
+    document.getElementById('ch-change').innerHTML=`<span class="${ch>=0?'up':'dn'}">${ch>=0?'+':''}${ch.toFixed(2)}% (24h)</span>`;
+    document.getElementById('ch-high').textContent=fmt(d.high_24h);
+    document.getElementById('ch-low').textContent=fmt(d.low_24h);
+    document.getElementById('ch-vol').textContent=fmtN(d.total_volume);
+    document.getElementById('ch-mcap').textContent=fmtN(d.market_cap);
   }
 }
 
-/* ── PRICE CHART ── */
-async function loadChart() {
-  document.getElementById('chart-loading').style.display = 'flex';
-  document.getElementById('chart-wrap').style.display = 'none';
-  try {
-    const r = await fetch(`https://api.coingecko.com/api/v3/coins/${selectedCoin.id}/market_chart?vs_currency=usd&days=${currentDays}`);
-    const data = await r.json();
-    const pts = data.prices;
-    const isUp = pts[pts.length-1][1] >= pts[0][1];
-    const color = isUp ? '#00ff80' : '#ff4455';
-    const labels = pts.map(p => {
-      const d = new Date(p[0]);
-      if (currentDays==='1') return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+// ─── CHART ───
+async function loadChart(){
+  const wrap=document.getElementById('chart-canvas-wrap');
+  document.getElementById('chart-loading').style.display='flex';
+  document.getElementById('priceChart').style.display='none';
+  try{
+    const r=await fetch(`https://api.coingecko.com/api/v3/coins/${selectedCoin.id}/market_chart?vs_currency=usd&days=${currentDays}`);
+    const data=await r.json();
+    const pts=data.prices;
+    const isUp=pts[pts.length-1][1]>=pts[0][1];
+    const upC='#00c896',dnC='#f0475a';
+    const lineC=isUp?upC:dnC;
+    const labels=pts.map(p=>{
+      const d=new Date(p[0]);
+      if(currentDays==='1')return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
       return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
     });
-    const values = pts.map(p => p[1]);
-
-    document.getElementById('chart-loading').style.display = 'none';
-    document.getElementById('chart-wrap').style.display = 'block';
-
-    const ctx = document.getElementById('priceChart').getContext('2d');
-    if (priceChart) priceChart.destroy();
-    priceChart = new Chart(ctx, {
+    const values=pts.map(p=>p[1]);
+    document.getElementById('chart-loading').style.display='none';
+    const canvas=document.getElementById('priceChart');
+    canvas.style.display='block';
+    const ctx=canvas.getContext('2d');
+    if(priceChart)priceChart.destroy();
+    priceChart=new Chart(ctx,{
       type:'line',
-      data:{
-        labels,
-        datasets:[{
-          data:values,
-          borderColor:color,
-          borderWidth:2,
-          pointRadius:0,
-          tension:0.3,
-          fill:true,
-          backgroundColor: ctx2 => {
-            const g = ctx2.chart.ctx.createLinearGradient(0,0,0,210);
-            g.addColorStop(0, isUp?'rgba(0,255,128,.18)':'rgba(255,68,85,.14)');
-            g.addColorStop(1,'rgba(0,0,0,0)');
-            return g;
-          }
-        }]
-      },
+      data:{labels,datasets:[{data:values,borderColor:lineC,borderWidth:1.5,pointRadius:0,tension:0.2,fill:true,
+        backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,c.chart.height);g.addColorStop(0,isUp?'rgba(0,200,150,.18)':'rgba(240,71,90,.15)');g.addColorStop(1,'rgba(0,0,0,0)');return g;}
+      }]},
       options:{
-        responsive:true, maintainAspectRatio:false,
+        responsive:true,maintainAspectRatio:false,
         interaction:{mode:'index',intersect:false},
         plugins:{
           legend:{display:false},
-          tooltip:{
-            backgroundColor:'#0d1117',
-            borderColor:'rgba(0,255,128,0.2)',
-            borderWidth:1,
-            titleColor:'#7a9e8e',
-            bodyColor:'#e8f5f0',
-            callbacks:{label:c=>' '+fmt(c.parsed.y)}
-          }
+          tooltip:{backgroundColor:'#1a2030',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,titleColor:'#8896a8',bodyColor:'#e8ecf2',padding:10,
+            callbacks:{label:c=>' '+fmt(c.parsed.y)}}
         },
         scales:{
-          x:{grid:{display:false},ticks:{color:'#3d5c4e',font:{size:10},maxTicksLimit:6,autoSkip:true},border:{display:false}},
-          y:{grid:{color:'rgba(0,255,128,.04)'},ticks:{color:'#3d5c4e',font:{size:10},callback:v=>fmt(v)},border:{display:false}}
+          x:{grid:{display:false},ticks:{color:'#4a5568',font:{size:10},maxTicksLimit:8,autoSkip:true},border:{display:false}},
+          y:{position:'right',grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4a5568',font:{size:10},callback:v=>fmt(v,0)},border:{display:false}}
         }
       }
     });
-  } catch(e) {
-    document.getElementById('chart-loading').innerHTML = '<div class="err">Chart unavailable. Rate limit — try again shortly.</div>';
+  }catch(e){
+    document.getElementById('chart-loading').innerHTML='<div class="err-msg">Chart unavailable. CoinGecko rate limit — wait a moment.</div>';
   }
 }
 
-function setTf(btn, days) {
+function setTf(btn,days){
   document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  currentDays = days;
+  currentDays=days;
   loadChart();
 }
 
-/* ── DONUT ── */
-function buildDonut() {
-  new Chart(document.getElementById('donutChart').getContext('2d'),{
-    type:'doughnut',
-    data:{
-      labels:['BTC','ETH','SOL','Other'],
-      datasets:[{data:[45,30,15,10],backgroundColor:['#00ff80','#00cc66','#008844','#3d5c4e'],borderWidth:0,hoverOffset:6}]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,cutout:'70%',
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          backgroundColor:'#0d1117',borderColor:'rgba(0,255,128,.2)',borderWidth:1,
-          titleColor:'#7a9e8e',bodyColor:'#e8f5f0',
-          callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}
-        }
-      }
-    }
-  });
+// ─── ORDER BOOK ───
+function buildOrderBook(){
+  const d=priceData[selectedCoin.id];
+  const base=d?d.current_price:50000;
+  const asks=[],bids=[];
+  for(let i=0;i<10;i++){
+    const spread=base*0.0002;
+    asks.push({p:base+spread*(i+1)*(1+Math.random()*.3),a:(Math.random()*3+.1).toFixed(4)});
+    bids.push({p:base-spread*(i+1)*(1+Math.random()*.3),a:(Math.random()*3+.1).toFixed(4)});
+  }
+  const maxVol=Math.max(...asks.map(a=>parseFloat(a.a)),...bids.map(b=>parseFloat(b.a)));
+  const askEl=document.getElementById('ob-asks');
+  askEl.innerHTML=asks.reverse().map(a=>`<div class="ob-row"><span style="color:var(--dn)">${a.p.toFixed(2)}</span><span style="color:var(--t1)">${a.a}</span><span style="color:var(--t2)">${(a.p*a.a).toFixed(1)}</span><div class="ob-bar" style="background:var(--dn);width:${(parseFloat(a.a)/maxVol*100).toFixed(0)}%"></div></div>`).join('');
+  const bidEl=document.getElementById('ob-bids');
+  bidEl.innerHTML=bids.map(b=>`<div class="ob-row"><span style="color:var(--up)">${b.p.toFixed(2)}</span><span style="color:var(--t1)">${b.a}</span><span style="color:var(--t2)">${(b.p*b.a).toFixed(1)}</span><div class="ob-bar" style="background:var(--up);width:${(parseFloat(b.a)/maxVol*100).toFixed(0)}%"></div></div>`).join('');
+  document.getElementById('ob-mid').textContent=fmt(base);
+  document.getElementById('ob-spread-val').textContent=`${(asks[0].p-bids[0].p).toFixed(2)}`;
 }
 
-/* ── MARKETS PAGE ── */
-async function loadMarkets() {
-  mktLoaded = true;
-  try {
-    const r = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&price_change_percentage=24h,7d');
-    const data = await r.json();
-    const body = document.getElementById('mkt-body');
-    body.innerHTML = '';
-    data.forEach((d,i) => {
-      const ch24 = d.price_change_percentage_24h;
-      const ch7  = d.price_change_percentage_7d_in_currency;
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td style="color:var(--text3);font-size:12px;">${i+1}</td>
-        <td>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div class="mkt-icon" style="background:rgba(0,255,128,.08);color:var(--green);font-size:11px;font-weight:700;">${d.symbol.toUpperCase().slice(0,3)}</div>
-            <div><div style="font-size:13px;font-weight:500;">${d.name}</div><div style="font-size:11px;color:var(--text2);">${d.symbol.toUpperCase()}</div></div>
-          </div>
-        </td>
-        <td style="text-align:right;font-weight:500;">${fmt(d.current_price)}</td>
-        <td style="text-align:right;"><span class="badge ${ch24>=0?'up':'down'}">${ch24!=null?(ch24>=0?'+':'')+ch24.toFixed(2)+'%':'—'}</span></td>
-        <td style="text-align:right;"><span class="badge ${ch7>=0?'up':'down'}">${ch7!=null?(ch7>=0?'+':'')+ch7.toFixed(2)+'%':'—'}</span></td>
-        <td style="text-align:right;font-size:12px;color:var(--text2);">${fmt(d.market_cap)}</td>
-        <td style="text-align:right;font-size:12px;color:var(--text2);">${fmt(d.total_volume)}</td>`;
-      body.appendChild(tr);
-    });
-    document.getElementById('mkt-loading').style.display = 'none';
-    document.getElementById('mkt-content').style.display = 'block';
-  } catch(e) {
-    document.getElementById('mkt-loading').innerHTML = '<div class="err">Could not load market data.</div>';
+// ─── TRADES ───
+function buildTrades(){
+  const d=priceData[selectedCoin.id];
+  const base=d?d.current_price:50000;
+  let html='';
+  for(let i=0;i<18;i++){
+    const isBuy=Math.random()>.48;
+    const p=(base*(1+(Math.random()-.5)*.001)).toFixed(2);
+    const a=(Math.random()*2+.01).toFixed(4);
+    const t=new Date(Date.now()-i*8000);
+    const ts=t.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    html+=`<div class="trades-row"><span style="color:${isBuy?'var(--up)':'var(--dn)'}">${p}</span><span style="color:var(--t1)">${a}</span><span style="color:var(--t3)">${ts}</span></div>`;
+  }
+  document.getElementById('trades-list').innerHTML=html;
+}
+
+// ─── MARKETS ───
+let mktFilter='all';
+async function loadMarkets(){
+  mktLoaded=true;
+  try{
+    const r=await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=true&price_change_percentage=24h,7d');
+    mktData=await r.json();
+    renderMarkets(mktData);
+  }catch(e){
+    document.getElementById('mkt-loading').innerHTML='<div class="err-msg">Could not load markets.</div>';
   }
 }
 
-/* ── NEWS (static sample — CoinGecko free tier has no news endpoint) ── */
-function loadNews() {
-  newsLoaded = true;
-  const articles = [
-    {src:'CoinDesk',title:'Bitcoin Surpasses $67K as Institutional Demand Surges',desc:'Major asset managers report record inflows into Bitcoin ETFs this week amid growing institutional confidence.',time:'2 hours ago',tag:'Bitcoin'},
-    {src:'The Block',title:'Ethereum Layer-2 Networks Hit $45B in Total Value Locked',desc:'The ecosystem continues to expand with Arbitrum and Base leading the charge in DeFi activity.',time:'4 hours ago',tag:'Ethereum'},
-    {src:'Decrypt',title:'Solana DeFi Volume Reaches All-Time High of $3.2B in 24 Hours',desc:'SOL-based protocols are seeing unprecedented trading activity driven by new memecoin launches.',time:'5 hours ago',tag:'Solana'},
-    {src:'CoinTelegraph',title:'Ripple Wins Key Legal Battle: XRP Jumps 8% on the News',desc:'The court ruling clears significant regulatory uncertainty for XRP, triggering a sharp rally.',time:'7 hours ago',tag:'XRP'},
-    {src:'Bloomberg Crypto',title:'Fed Rate Decision Sparks 5% Rally Across Crypto Markets',desc:'Risk assets including BTC, ETH, and SOL all posted significant gains after the FOMC announcement.',time:'9 hours ago',tag:'Macro'},
-    {src:'Forbes',title:'BlackRock Bitcoin ETF Accumulates Over $20B in Assets',desc:'The iShares Bitcoin Trust has become one of the fastest-growing ETFs in Wall Street history.',time:'12 hours ago',tag:'ETFs'},
-    {src:'Reuters',title:'Dubai Announces New Crypto-Friendly Regulatory Framework',desc:'The UAE government is positioning itself as a global hub for digital asset businesses and innovation.',time:'1 day ago',tag:'Regulation'},
-    {src:'Wired',title:'Web3 Gaming Sees $1.5B in Venture Funding This Quarter',desc:'Investors are betting big on blockchain gaming despite the broader market correction earlier this year.',time:'1 day ago',tag:'Web3'},
-    {src:'CoinDesk',title:'Tether Launches New Stablecoin Pegged to UAE Dirham',desc:'The world\'s largest stablecoin issuer is expanding its product line to target Middle Eastern markets.',time:'2 days ago',tag:'Stablecoins'},
-  ];
-  const grid = document.getElementById('news-grid');
-  grid.innerHTML = '';
-  articles.forEach(a => {
-    const el = document.createElement('div');
-    el.className = 'news-card';
-    el.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div class="news-src">${a.src}</div>
-        <span class="news-tag">${a.tag}</span>
-      </div>
-      <div class="news-title">${a.title}</div>
-      <div class="news-desc">${a.desc}</div>
-      <div class="news-meta"><i class="ti ti-clock" style="font-size:11px;vertical-align:-1px;"></i> ${a.time}</div>`;
-    grid.appendChild(el);
+const DEFI=['uniswap','aave','compound-governance-token','maker','curve-dao-token','sushiswap'];
+const LAYER1=['bitcoin','ethereum','solana','cardano','polkadot','avalanche-2','near','cosmos'];
+const STABLE=['tether','usd-coin','binance-usd','dai','true-usd'];
+
+function filterMkt(btn,cat){
+  document.querySelectorAll('.mkt-filters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  mktFilter=cat;
+  let filtered=mktData;
+  if(cat==='top')filtered=mktData.slice(0,10);
+  else if(cat==='defi')filtered=mktData.filter(d=>DEFI.includes(d.id));
+  else if(cat==='layer1')filtered=mktData.filter(d=>LAYER1.includes(d.id));
+  else if(cat==='stablecoin')filtered=mktData.filter(d=>STABLE.includes(d.id));
+  renderMarkets(filtered);
+}
+
+function filterSearch(q){
+  const filtered=mktData.filter(d=>d.name.toLowerCase().includes(q.toLowerCase())||d.symbol.toLowerCase().includes(q.toLowerCase()));
+  renderMarkets(filtered);
+}
+
+function renderMarkets(data){
+  document.getElementById('mkt-loading').style.display='none';
+  const table=document.getElementById('mkt-table');
+  table.style.display='table';
+  const body=document.getElementById('mkt-body');
+  body.innerHTML=data.map((d,i)=>{
+    const ch24=d.price_change_percentage_24h;
+    const ch7=d.price_change_percentage_7d_in_currency;
+    const spark=d.sparkline_in_7d?d.sparkline_in_7d.price:null;
+    const sparkId=`spark-${d.id}`;
+    return`<tr onclick="void(0)">
+      <td><span class="mkt-rank">${i+1}</span></td>
+      <td><div class="mkt-coin-cell">
+        <div class="mkt-ico" style="background:rgba(255,255,255,.06);color:var(--t1)">${d.symbol.toUpperCase().slice(0,3)}</div>
+        <div><div class="mkt-name">${d.name}</div><div class="mkt-sym">${d.symbol.toUpperCase()}</div></div>
+      </div></td>
+      <td style="font-weight:600">${fmt(d.current_price)}</td>
+      <td><span class="badge ${ch24>=0?'badge-up':'badge-dn'}">${ch24!=null?(ch24>=0?'+':'')+ch24.toFixed(2)+'%':'—'}</span></td>
+      <td><span class="badge ${ch7>=0?'badge-up':'badge-dn'}">${ch7!=null?(ch7>=0?'+':'')+ch7.toFixed(2)+'%':'—'}</span></td>
+      <td style="color:var(--t2)">${fmt(d.market_cap)}</td>
+      <td style="color:var(--t2)">${fmt(d.total_volume)}</td>
+      <td style="color:var(--t2);font-size:11px">${fmtN(d.circulating_supply)} ${d.symbol.toUpperCase()}</td>
+      <td><div class="sparkline-wrap"><canvas id="${sparkId}" width="80" height="32" role="img" aria-label="7d sparkline"></canvas></div></td>
+      <td><button class="trade-btn" onclick="goPage('dashboard')">Trade</button></td>
+    </tr>`;
+  }).join('');
+  // Draw sparklines
+  data.forEach(d=>{
+    const spark=d.sparkline_in_7d?d.sparkline_in_7d.price:null;
+    if(!spark)return;
+    const canvas=document.getElementById(`spark-${d.id}`);
+    if(!canvas)return;
+    const isUp=spark[spark.length-1]>=spark[0];
+    new Chart(canvas.getContext('2d'),{
+      type:'line',
+      data:{labels:spark.map((_,i)=>i),datasets:[{data:spark,borderColor:isUp?'#00c896':'#f0475a',borderWidth:1.5,pointRadius:0,tension:0.3,fill:false}]},
+      options:{responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}},animation:false}
+    });
   });
-  document.getElementById('news-loading').style.display = 'none';
-  grid.style.display = 'grid';
 }
 
-/* ── BOOT ── */
-function loadAll() {
-  loadPrices();
-  loadGlobal();
+// ─── PORTFOLIO ───
+const PORT_COLORS=['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#ef4444'];
+async function loadPortfolio(){
+  portLoaded=true;
+  try{
+    const ids=COINS.map(c=>c.id).join(',');
+    const r=await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&price_change_percentage=24h`);
+    const data=await r.json();
+    data.forEach(d=>{priceData[d.id]=d;});
+    const body=document.getElementById('asset-body');
+    body.innerHTML='';
+    let total=0;
+    const vals=COINS.map(c=>{
+      const d=priceData[c.id];
+      if(!d)return{c,val:0,d:null};
+      const val=d.current_price*c.qty;
+      total+=val;
+      return{c,val,d};
+    });
+    vals.forEach(({c,val,d})=>{
+      if(!d)return;
+      const ch=d.price_change_percentage_24h;
+      const cost=c.avgCost*c.qty;
+      const pnl=val-cost;
+      const pnlPct=(pnl/cost)*100;
+      const pct=(val/total)*100;
+      const tr=document.createElement('tr');
+      tr.className='asset-row';
+      tr.innerHTML=`
+        <td><div class="mkt-coin-cell"><div class="mkt-ico" style="background:${c.bg};color:${c.color};font-size:11px">${c.sym}</div><div><div class="mkt-name">${c.name}</div><div class="mkt-sym">${c.sym}</div></div></div></td>
+        <td style="font-weight:600">${fmt(d.current_price)}</td>
+        <td>${chBadge(ch)}</td>
+        <td style="color:var(--t2)">${c.qty} ${c.sym}</td>
+        <td style="font-weight:600">${fmt(val)}</td>
+        <td><div style="font-size:11px;color:var(--t2);margin-bottom:3px">${pct.toFixed(1)}%</div><div class="pf-bar-wrap"><div class="pf-bar" style="width:${pct.toFixed(0)}%;background:${c.color}"></div></div></td>
+        <td style="font-weight:600;color:${pnl>=0?'var(--up)':'var(--dn)'}">${pnl>=0?'+':''}${fmt(pnl)} <span style="font-weight:400;font-size:11px">(${pnlPct>=0?'+':''}${pnlPct.toFixed(1)}%)</span></td>`;
+      body.appendChild(tr);
+    });
+    // Donut
+    const donutCtx=document.getElementById('donutChart').getContext('2d');
+    new Chart(donutCtx,{
+      type:'doughnut',
+      data:{labels:COINS.map(c=>c.sym),datasets:[{data:vals.map(v=>v.val),backgroundColor:PORT_COLORS,borderWidth:0,hoverOffset:4}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2030',borderColor:'rgba(255,255,255,.1)',borderWidth:1,callbacks:{label:c=>` ${c.label}: ${fmt(c.raw)}`}}}}
+    });
+    const legend=document.getElementById('donut-legend');
+    legend.innerHTML=COINS.map((c,i)=>`<div style="display:flex;align-items:center;gap:7px;font-size:11px"><div style="width:8px;height:8px;border-radius:2px;background:${PORT_COLORS[i]};flex-shrink:0"></div><span style="color:var(--t2)">${c.sym}</span><span style="color:var(--t1);font-weight:600">${fmt(vals[i].val)}</span></div>`).join('');
+    // Portfolio history chart
+    const portCtx=document.getElementById('portChart').getContext('2d');
+    const portLabels=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const portVals=[12000,13500,11800,15200,16800,14900,18200,20100,19400,21800,23500,24831];
+    new Chart(portCtx,{
+      type:'line',
+      data:{labels:portLabels,datasets:[{data:portVals,borderColor:'#3b82f6',borderWidth:2,pointRadius:0,tension:0.4,fill:true,backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,160);g.addColorStop(0,'rgba(59,130,246,.2)');g.addColorStop(1,'rgba(59,130,246,0)');return g;}}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2030',borderColor:'rgba(255,255,255,.1)',borderWidth:1,callbacks:{label:c=>' '+fmt(c.raw)}}},scales:{x:{grid:{display:false},ticks:{color:'#4a5568',font:{size:9}},border:{display:false}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5568',font:{size:9},callback:v=>'$'+v/1000+'k'},border:{display:false}}}}
+    });
+  }catch(e){
+    document.getElementById('asset-body').innerHTML='<tr><td colspan="7"><div class="err-msg" style="padding:16px">Could not load portfolio data.</div></td></tr>';
+  }
+}
+
+// ─── NEWS ───
+const NEWS=[
+  {src:'CoinDesk',time:'2h ago',title:'Bitcoin Surpasses $67K as Institutional Demand Reaches All-Time High',desc:'Major asset managers including BlackRock and Fidelity reported record inflows into spot Bitcoin ETFs this week.',tags:['Bitcoin','ETF'],cat:'bitcoin'},
+  {src:'The Block',time:'4h ago',title:'Ethereum Layer-2 Networks Hit $45B TVL Milestone',desc:'Arbitrum, Base, and Optimism are leading the charge as DeFi activity on L2s surpasses the main chain.',tags:['Ethereum','DeFi','L2'],cat:'ethereum'},
+  {src:'Decrypt',time:'5h ago',title:'Solana DEX Volume Reaches $3.2B in a Single Day',desc:'Jupiter and Raydium set new records as memecoin trading activity drives unprecedented on-chain volume.',tags:['Solana','DeFi'],cat:'bitcoin'},
+  {src:'Reuters',time:'7h ago',title:'EU MiCA Regulations Come Into Full Effect — What It Means',desc:'The landmark crypto framework is now fully active, affecting exchanges and stablecoin issuers across Europe.',tags:['Regulation','Europe'],cat:'regulation'},
+  {src:'CoinTelegraph',time:'9h ago',title:'Ripple Wins Key Legal Battle: XRP Surges 8%',desc:'The court ruling clears significant regulatory uncertainty for XRP, triggering a sharp rally across the altcoin market.',tags:['XRP','Legal'],cat:'bitcoin'},
+  {src:'Bloomberg',time:'12h ago',title:'Fed Rate Decision Triggers 5% Rally Across Crypto Markets',desc:'Risk assets including BTC, ETH, and SOL all posted significant gains after the FOMC announcement.',tags:['Macro','Bitcoin'],cat:'bitcoin'},
+  {src:'Forbes',time:'1d ago',title:'BlackRock Bitcoin ETF Accumulates $20B in Assets Under Management',desc:'The iShares Bitcoin Trust has become one of the fastest-growing ETF products in Wall Street history.',tags:['Bitcoin','ETF'],cat:'bitcoin'},
+  {src:'Wired',time:'1d ago',title:'DeFi TVL Recovers to $95B as Lending Protocols See Surge',desc:'Aave, Compound, and MakerDAO are all seeing renewed interest amid improving market sentiment.',tags:['DeFi'],cat:'defi'},
+  {src:'CoinDesk',time:'2d ago',title:'Uniswap V4 Launch Date Confirmed — New Hook Architecture Explained',desc:'The upcoming DEX upgrade introduces a revolutionary hook system allowing custom pool logic.',tags:['DeFi','Ethereum'],cat:'defi'},
+];
+const TRENDING=[
+  {name:'Bitcoin',meta:'$67,420 · +2.3%',ch:2.3,tag:'BTC'},
+  {name:'Pepe',meta:'$0.000012 · +34.1%',ch:34.1,tag:'PEPE'},
+  {name:'Ethereum',meta:'$3,521 · +1.9%',ch:1.9,tag:'ETH'},
+  {name:'Solana',meta:'$178.40 · -0.9%',ch:-0.9,tag:'SOL'},
+  {name:'Dogecoin',meta:'$0.148 · +5.2%',ch:5.2,tag:'DOGE'},
+];
+let newsFilter='all';
+function filterNews(btn,cat){
+  document.querySelectorAll('.news-filters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  newsFilter=cat;
+  loadNews();
+}
+function loadNews(){
+  const filtered=newsFilter==='all'?NEWS:NEWS.filter(n=>n.cat===newsFilter||n.tags.map(t=>t.toLowerCase()).includes(newsFilter));
+  document.getElementById('news-container').innerHTML=filtered.map(n=>`
+    <div class="news-card">
+      <div class="news-card-top"><span class="news-src">${n.src}</span><span class="news-time">${n.time}</span></div>
+      <div class="news-title">${n.title}</div>
+      <div class="news-desc">${n.desc}</div>
+      <div class="news-tags">${n.tags.map(t=>`<span class="news-tag">${t}</span>`).join('')}</div>
+    </div>`).join('');
+  document.getElementById('trending-list').innerHTML=TRENDING.map((t,i)=>`
+    <div class="trending-item">
+      <div class="trend-rank">${i+1}</div>
+      <div class="trend-info"><div class="trend-name">${t.name} <span style="color:var(--t3);font-size:10px">${t.tag}</span></div><div class="trend-meta">${t.meta}</div></div>
+      <div class="trend-change ${t.ch>=0?'up':'dn'}">${t.ch>=0?'+':''}${t.ch}%</div>
+    </div>`).join('');
+}
+
+// ─── SETTINGS NAV ───
+function showSettingsSection(el,id){
+  document.querySelectorAll('.settings-nav-item').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('ss-'+id).classList.add('active');
+}
+
+// ─── BOOT ───
+async function init(){
+  buildTicker();
+  await loadPrices();
   loadChart();
+  loadNews();
 }
-
-buildDonut();
-loadAll();
-setInterval(loadAll, 60000);
+init();
+setInterval(()=>{loadPrices();buildTicker();},60000);
+setInterval(()=>{buildOrderBook();buildTrades();},3000);
 </script>
 </body>
 </html>
