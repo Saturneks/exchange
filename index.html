@@ -428,10 +428,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t1);font-
           <button class="filter-btn" onclick="filterMkt(this,'defi')">DeFi</button>
           <button class="filter-btn" onclick="filterMkt(this,'layer1')">Layer 1</button>
           <button class="filter-btn" onclick="filterMkt(this,'stablecoin')">Stablecoins</button>
-          <div class="search-box"><i class="ti ti-search" style="font-size:14px;color:var(--t3)"></i><input id="mkt-search" placeholder="Search coin…" oninput="filterSearch(this.value)"></div>
+          <div class="search-box"><i class="ti ti-search" style="font-size:14px;color:var(--t3)"></i><input id="mkt-search" type="search" aria-label="Search coins" placeholder="Search coin…" oninput="filterSearch()"></div>
         </div>
         <div class="mkt-table-wrap">
-          <div id="mkt-loading" class="loading"><div class="spin"></div> Loading markets…</div>
+          <div id="mkt-loading" class="loading" role="status"><div class="spin"></div> Loading markets…</div>
           <table class="mkt-table" id="mkt-table" style="display:none">
             <thead><tr>
               <th style="width:40px">#</th>
@@ -939,14 +939,29 @@ function buildTrades(){
 
 // ─── MARKETS ───
 let mktFilter='all';
+let mktLoading=false;
 async function loadMarkets(){
-  mktLoaded=true;
+  if(mktLoading)return;
+  mktLoading=true;
+  const loading=document.getElementById('mkt-loading');
+  loading.style.display='flex';
+  loading.innerHTML='<div class="spin"></div> Loading markets…';
+  document.getElementById('mkt-table').style.display='none';
   try{
-    const r=await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=true&price_change_percentage=24h,7d');
-    mktData=await r.json();
-    renderMarkets(mktData);
+    const r=await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=true&price_change_percentage=24h,7d', {signal:AbortSignal.timeout(15000)});
+    if(!r.ok)throw new Error('Market request failed');
+    const data=await r.json();
+    if(!Array.isArray(data)||!data.length)throw new Error('No market data');
+    mktData=data;
+    mktLoaded=true;
+    applyMarketFilters();
   }catch(e){
-    document.getElementById('mkt-loading').innerHTML='<div class="err-msg">Could not load markets.</div>';
+    mktLoaded=false;
+    loading.style.display='flex';
+    document.getElementById('mkt-table').style.display='none';
+    loading.innerHTML='<div class="err-msg">Could not load markets. <button class="filter-btn" onclick="loadMarkets()">Retry</button></div>';
+  }finally{
+    mktLoading=false;
   }
 }
 
@@ -958,16 +973,28 @@ function filterMkt(btn,cat){
   document.querySelectorAll('.mkt-filters .filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   mktFilter=cat;
-  let filtered=mktData;
-  if(cat==='top')filtered=mktData.slice(0,10);
-  else if(cat==='defi')filtered=mktData.filter(d=>DEFI.includes(d.id));
-  else if(cat==='layer1')filtered=mktData.filter(d=>LAYER1.includes(d.id));
-  else if(cat==='stablecoin')filtered=mktData.filter(d=>STABLE.includes(d.id));
-  renderMarkets(filtered);
+  applyMarketFilters();
 }
 
-function filterSearch(q){
-  const filtered=mktData.filter(d=>d.name.toLowerCase().includes(q.toLowerCase())||d.symbol.toLowerCase().includes(q.toLowerCase()));
+function filterSearch(){
+  applyMarketFilters();
+}
+
+function clearMarketFilters(){
+  document.getElementById('mkt-search').value='';
+  filterMkt(document.querySelector('.mkt-filters .filter-btn'),'all');
+  document.getElementById('mkt-search').focus();
+}
+
+function applyMarketFilters(){
+  if(!mktLoaded)return;
+  let filtered=mktData;
+  if(mktFilter==='top')filtered=mktData.slice(0,10);
+  else if(mktFilter==='defi')filtered=mktData.filter(d=>DEFI.includes(d.id));
+  else if(mktFilter==='layer1')filtered=mktData.filter(d=>LAYER1.includes(d.id));
+  else if(mktFilter==='stablecoin')filtered=mktData.filter(d=>STABLE.includes(d.id));
+  const q=document.getElementById('mkt-search').value.trim().toLowerCase();
+  filtered=filtered.filter(d=>d.name.toLowerCase().includes(q)||d.symbol.toLowerCase().includes(q));
   renderMarkets(filtered);
 }
 
@@ -997,6 +1024,9 @@ function renderMarkets(data){
       <td><button class="trade-btn" onclick="goPage('dashboard')">Trade</button></td>
     </tr>`;
   }).join('');
+  if(!data.length){
+    body.innerHTML='<tr><td colspan="10" style="text-align:center;padding:32px"><div role="status">No coins match your search and category.</div><button class="filter-btn" onclick="clearMarketFilters()">Clear filters</button></td></tr>';
+  }
   // Draw sparklines
   data.forEach(d=>{
     const spark=d.sparkline_in_7d?d.sparkline_in_7d.price:null;
